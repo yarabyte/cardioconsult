@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CardioConsult — site public — CardioConsult (template)</title>
+<link rel="icon" href="assets/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F7FC;color:#0A1F44;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+a{color:#0B4FB3}a:hover{color:#083A85}
+</style>
+</head>
+<body>
+<template id="dc-tpl">
+
+<div style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #0A1F44; background: #FFFFFF">
+
+<!-- Navigation -->
+<header style="border-bottom: 1px solid #E3E9F4; background: #FFFFFF">
+<div style="max-width: 1240px; margin: 0 auto; padding: 18px 32px; display: flex; align-items: center; gap: 32px; flex-wrap: wrap">
+<img src="assets/logo-clair.svg" alt="CardioConsult" style="height: 40px; width: auto">
+<nav aria-label="Navigation principale" style="display: flex; gap: 28px; flex-wrap: wrap; font-size: 15px; font-weight: 600; flex: 1 1 auto">
+<a href="#fonctionnalites" style="color: #0A1F44; text-decoration: none">Fonctionnalités</a>
+<a href="#courbes" style="color: #0A1F44; text-decoration: none">Courbes & suivi</a>
+<a href="#securite" style="color: #0A1F44; text-decoration: none">Sécurité & conformité</a>
+<a href="#tarifs" style="color: #0A1F44; text-decoration: none">Tarifs</a>
+</nav>
+<div style="display: flex; gap: 12px; align-items: center">
+<a href="03-connexion-a-l-espace-cabinet.html" style="font-size: 15px; font-weight: 700; color: #0B4FB3; text-decoration: none; padding: 12px 8px">Se connecter</a>
+<a href="02-inscription-creation-du-tenant.html" style="font-size: 15px; font-weight: 700; color: #FFFFFF; background: #0B4FB3; text-decoration: none; padding: 12px 20px; border-radius: 10px">Essai gratuit 30 jours</a>
+</div>
+</div>
+</header>
+
+<!-- Hero -->
+<section style="background: #F4F7FC; border-bottom: 1px solid #E3E9F4">
+<div style="max-width: 1240px; margin: 0 auto; padding: 72px 32px 80px; display: flex; gap: 56px; flex-wrap: wrap; align-items: center">
+<div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+<span style="align-self: flex-start; font-size: 13px; font-weight: 700; color: #B81E2A; background: #FDECEE; padding: 6px 12px; border-radius: 999px">Conçu avec des cardiologues hospitaliers et libéraux</span>
+<h1 style="margin: 0; font-size: 54px; line-height: 1.08; font-weight: 800; letter-spacing: -1.2px">La consultation de cardiologie, <span style="color: #0B4FB3">structurée</span> du motif au <span style="color: #D42A35">compte rendu</span>.</h1>
+<p style="margin: 0; font-size: 19px; line-height: 1.6; color: #3E4D6A">Clinique, ECG, ETT, aorte, scores et ordonnance dans un seul parcours. Les courbes de suivi se construisent toutes seules, consultation après consultation.</p>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<a href="02-inscription-creation-du-tenant.html" style="font-size: 16px; font-weight: 700; color: #FFFFFF; background: #0B4FB3; text-decoration: none; padding: 16px 26px; border-radius: 12px">Créer l'espace de mon cabinet</a>
+<a href="04-tableau-de-bord-medecin.html" style="font-size: 16px; font-weight: 700; color: #0A1F44; background: #FFFFFF; border: 1px solid #C9D5EA; text-decoration: none; padding: 15px 24px; border-radius: 12px">Voir la démonstration</a>
+</div>
+<p style="margin: 0; font-size: 14px; color: #52627F">Votre adresse dédiée : <strong style="color: #0A1F44">dr-martin</strong>.cardioconsult.fr · sans carte bancaire</p>
+</div>
+<div style="flex: 1 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #DCE4F2; border-radius: 20px; padding: 22px; box-shadow: 0 24px 60px rgba(10, 31, 68, 0.10); display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="width: 44px; height: 44px; border-radius: 12px; background: #EAF1FD; color: #0B4FB3; display: flex; align-items: center; justify-content: center; font-weight: 800">JD</div>
+<div style="flex: 1">
+<div style="font-weight: 800; font-size: 16px">Jeanne Dupont · 67 ans</div>
+<div style="font-size: 13px; color: #52627F">IC à FE réduite · FA paroxystique · patiente fictive</div>
+</div>
+<span style="font-size: 12px; font-weight: 700; color: #0F7A4D; background: #E6F5EE; padding: 5px 10px; border-radius: 999px">FEVG +15 pts</span>
+</div>
+<div style="border: 1px solid #E3E9F4; border-radius: 14px; padding: 14px 14px 6px">
+<div style="font-size: 13px; font-weight: 700; color: #52627F; margin-bottom: 6px">FEVG (%) — 6 dernières ETT</div>
+<svg viewBox="0 0 600 200" width="100%" role="img" aria-label="FEVG mesurée en ETT" font-family="'Plus Jakarta Sans',system-ui,sans-serif" style="display:block"><rect x="44" y="107.6" width="540" height="62.4" fill="#FDECEE"/><rect x="44" y="76.4" width="540" height="31.2" fill="#FFF4E0"/><rect x="44" y="14.0" width="540" height="62.4" fill="#E6F5EE"/><line x1="44" x2="584" y1="170.0" y2="170.0" stroke="#E3E9F4"/><text x="36" y="174.0" font-size="11" fill="#52627F" text-anchor="end">20</text><line x1="44" x2="584" y1="138.8" y2="138.8" stroke="#E3E9F4"/><text x="36" y="142.8" font-size="11" fill="#52627F" text-anchor="end">30</text><line x1="44" x2="584" y1="107.6" y2="107.6" stroke="#E3E9F4"/><text x="36" y="111.6" font-size="11" fill="#52627F" text-anchor="end">40</text><line x1="44" x2="584" y1="76.4" y2="76.4" stroke="#E3E9F4"/><text x="36" y="80.4" font-size="11" fill="#52627F" text-anchor="end">50</text><line x1="44" x2="584" y1="45.2" y2="45.2" stroke="#E3E9F4"/><text x="36" y="49.2" font-size="11" fill="#52627F" text-anchor="end">60</text><line x1="44" x2="584" y1="14.0" y2="14.0" stroke="#E3E9F4"/><text x="36" y="18.0" font-size="11" fill="#52627F" text-anchor="end">70</text><text x="44.0" y="191" font-size="11" fill="#52627F" text-anchor="middle">03/24</text><text x="152.0" y="191" font-size="11" fill="#52627F" text-anchor="middle">09/24</text><text x="260.0" y="191" font-size="11" fill="#52627F" text-anchor="middle">03/25</text><text x="368.0" y="191" font-size="11" fill="#52627F" text-anchor="middle">09/25</text><text x="476.0" y="191" font-size="11" fill="#52627F" text-anchor="middle">03/26</text><text x="584.0" y="191" font-size="11" fill="#52627F" text-anchor="middle">09/26</text><polygon points="44.0,170 44.0,132.6 152.0,123.2 260.0,113.8 368.0,104.5 476.0,95.1 584.0,85.8 584.0,170" fill="#0B4FB3" opacity="0.10"/><polyline points="44.0,132.6 152.0,123.2 260.0,113.8 368.0,104.5 476.0,95.1 584.0,85.8" fill="none" stroke="#0B4FB3" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="44.0" cy="132.6" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="152.0" cy="123.2" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="260.0" cy="113.8" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="368.0" cy="104.5" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="476.0" cy="95.1" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="584.0" cy="85.8" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><text x="578.0" y="76.8" font-size="11.5" font-weight="700" fill="#0B4FB3" text-anchor="end">47 %</text></svg>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<div style="background: #F4F7FC; border-radius: 12px; padding: 12px"><div style="font-size: 12px; color: #52627F">CHA₂DS₂-VA</div><div style="font-size: 22px; font-weight: 800">3</div></div>
+<div style="background: #F4F7FC; border-radius: 12px; padding: 12px"><div style="font-size: 12px; color: #52627F">NT-proBNP</div><div style="font-size: 22px; font-weight: 800">590</div></div>
+<div style="background: #FDECEE; border-radius: 12px; padding: 12px"><div style="font-size: 12px; color: #B81E2A">Aorte asc.</div><div style="font-size: 22px; font-weight: 800; color: #B81E2A">60 mm</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Bandeau confiance -->
+<section style="border-bottom: 1px solid #E3E9F4">
+<div style="max-width: 1240px; margin: 0 auto; padding: 26px 32px; display: flex; gap: 36px; flex-wrap: wrap; justify-content: space-between; font-size: 14px; font-weight: 700; color: #3E4D6A">
+<span>Hébergement de données de santé en France*</span>
+<span>Connexion Pro Santé Connect / e-CPS (prévu)</span>
+<span>Chiffrement au repos et en transit</span>
+<span>Journal d'audit de chaque accès</span>
+<span>Interface 100 % en français</span>
+</div>
+</section>
+
+<!-- Fonctionnalités -->
+<section id="fonctionnalites" style="max-width: 1240px; margin: 0 auto; padding: 88px 32px 40px">
+<p style="margin: 0 0 10px; font-size: 14px; font-weight: 800; color: #D42A35; letter-spacing: 1.5px; text-transform: uppercase">Fonctionnalités</p>
+<h2 style="margin: 0 0 40px; font-size: 38px; font-weight: 800; letter-spacing: -0.8px; max-width: 760px">Tout ce que fait votre consultation, sans ressaisie.</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px">
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 24px"><div style="font-size: 13px; font-weight: 800; color: #0B4FB3">01</div><h3 style="margin: 8px 0; font-size: 18px">Consultation guidée</h3><p style="margin: 0; font-size: 15px; line-height: 1.55; color: #3E4D6A">20 rubriques, indicateur de complétude, « non renseigné » jamais confondu avec « normal ».</p></div>
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 24px"><div style="font-size: 13px; font-weight: 800; color: #0B4FB3">02</div><h3 style="margin: 8px 0; font-size: 18px">ECG & ETT structurés</h3><p style="margin: 0; font-size: 15px; line-height: 1.55; color: #3E4D6A">Unités explicites, valves multiparamétriques, probabilité échographique d'HTP.</p></div>
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 24px"><div style="font-size: 13px; font-weight: 800; color: #D42A35">03</div><h3 style="margin: 8px 0; font-size: 18px">Module Aorte</h3><p style="margin: 0; font-size: 15px; line-height: 1.55; color: #3E4D6A">Mesures par segment, vitesse de croissance datée, alertes graduées et justifiées.</p></div>
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 24px"><div style="font-size: 13px; font-weight: 800; color: #0B4FB3">04</div><h3 style="margin: 8px 0; font-size: 18px">Scores contextuels</h3><p style="margin: 0; font-size: 15px; line-height: 1.55; color: #3E4D6A">CHA₂DS₂-VA, HAS-BLED, GRACE, TIMI, RCRI… avec « pourquoi ce résultat » et données manquantes.</p></div>
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 24px"><div style="font-size: 13px; font-weight: 800; color: #0B4FB3">05</div><h3 style="margin: 8px 0; font-size: 18px">Compte rendu & ordonnance</h3><p style="margin: 0; font-size: 15px; line-height: 1.55; color: #3E4D6A">Aperçu A4, brouillon / validé / signé, modèles par motif, export PDF.</p></div>
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 24px"><div style="font-size: 13px; font-weight: 800; color: #0B4FB3">06</div><h3 style="margin: 8px 0; font-size: 18px">Dossier longitudinal</h3><p style="margin: 0; font-size: 15px; line-height: 1.55; color: #3E4D6A">TA, FC, poids, FEVG, DFG, NT-proBNP, QTc, LDL et aorte en courbes.</p></div>
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 24px"><div style="font-size: 13px; font-weight: 800; color: #0B4FB3">07</div><h3 style="margin: 8px 0; font-size: 18px">Médecin & infirmière</h3><p style="margin: 0; font-size: 15px; line-height: 1.55; color: #3E4D6A">L'IDE prépare constantes et ECG, le médecin valide. Droits par rôle.</p></div>
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 24px"><div style="font-size: 13px; font-weight: 800; color: #0B4FB3">08</div><h3 style="margin: 8px 0; font-size: 18px">Vue hospitalisation</h3><p style="margin: 0; font-size: 15px; line-height: 1.55; color: #3E4D6A">Portefeuille de lits, transmissions, sorties prévues, examens en attente.</p></div>
+</div>
+</section>
+
+<!-- Courbes -->
+<section id="courbes" style="max-width: 1240px; margin: 0 auto; padding: 56px 32px">
+<p style="margin: 0 0 10px; font-size: 14px; font-weight: 800; color: #D42A35; letter-spacing: 1.5px; text-transform: uppercase">Courbes & suivi</p>
+<h2 style="margin: 0 0 12px; font-size: 38px; font-weight: 800; letter-spacing: -0.8px">Des courbes qui parlent cardiologie.</h2>
+<p style="margin: 0 0 36px; font-size: 17px; color: #3E4D6A; max-width: 720px; line-height: 1.6">Chaque valeur saisie alimente le suivi : cibles affichées, seuils configurables, zones FEVG réduite / modérément réduite / préservée.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px">
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 20px"><div style="font-weight: 800; margin-bottom: 4px">Pression artérielle</div><div style="font-size: 13px; color: #52627F; margin-bottom: 8px">TAS / TAD (mmHg) · cible configurable</div><svg viewBox="0 0 600 230" width="100%" role="img" aria-label="Évolution de la pression artérielle sur 12 consultations" font-family="'Plus Jakarta Sans',system-ui,sans-serif" style="display:block"><line x1="44" x2="584" y1="200.0" y2="200.0" stroke="#E3E9F4"/><text x="36" y="204.0" font-size="11" fill="#52627F" text-anchor="end">60</text><line x1="44" x2="584" y1="153.5" y2="153.5" stroke="#E3E9F4"/><text x="36" y="157.5" font-size="11" fill="#52627F" text-anchor="end">90</text><line x1="44" x2="584" y1="107.0" y2="107.0" stroke="#E3E9F4"/><text x="36" y="111.0" font-size="11" fill="#52627F" text-anchor="end">120</text><line x1="44" x2="584" y1="60.5" y2="60.5" stroke="#E3E9F4"/><text x="36" y="64.5" font-size="11" fill="#52627F" text-anchor="end">150</text><line x1="44" x2="584" y1="14.0" y2="14.0" stroke="#E3E9F4"/><text x="36" y="18.0" font-size="11" fill="#52627F" text-anchor="end">180</text><text x="44.0" y="221" font-size="11" fill="#52627F" text-anchor="middle">03/24</text><text x="142.2" y="221" font-size="11" fill="#52627F" text-anchor="middle">09/24</text><text x="240.4" y="221" font-size="11" fill="#52627F" text-anchor="middle">02/25</text><text x="338.5" y="221" font-size="11" fill="#52627F" text-anchor="middle">08/25</text><text x="436.7" y="221" font-size="11" fill="#52627F" text-anchor="middle">02/26</text><text x="534.9" y="221" font-size="11" fill="#52627F" text-anchor="middle">08/26</text><text x="584.0" y="221" font-size="11" fill="#52627F" text-anchor="middle">11/26</text><line x1="44" x2="584" y1="76.0" y2="76.0" stroke="#D42A35" stroke-dasharray="5 4" stroke-width="1.4"/><text x="580" y="71.0" font-size="10.5" font-weight="700" fill="#D42A35" text-anchor="end">Cible TAS 140</text><polyline points="44.0,41.9 93.1,48.1 142.2,59.0 191.3,62.0 240.4,66.7 289.5,74.4 338.5,79.1 387.6,72.9 436.7,82.2 485.8,86.9 534.9,90.0 584.0,94.6" fill="none" stroke="#0B4FB3" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="44.0" cy="41.9" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="93.1" cy="48.1" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="142.2" cy="59.0" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="191.3" cy="62.0" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="240.4" cy="66.7" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="289.5" cy="74.4" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="338.5" cy="79.1" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="387.6" cy="72.9" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="436.7" cy="82.2" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="485.8" cy="86.9" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="534.9" cy="90.0" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="584.0" cy="94.6" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><text x="578.0" y="85.6" font-size="11.5" font-weight="700" fill="#0B4FB3" text-anchor="end">128</text><polyline points="44.0,144.2 93.1,147.3 142.2,150.4 191.3,153.5 240.4,156.6 289.5,159.7 338.5,162.8 387.6,159.7 436.7,165.9 485.8,169.0 534.9,170.6 584.0,172.1" fill="none" stroke="#7FA6E6" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="44.0" cy="144.2" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="93.1" cy="147.3" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="142.2" cy="150.4" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="191.3" cy="153.5" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="240.4" cy="156.6" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="289.5" cy="159.7" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="338.5" cy="162.8" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="387.6" cy="159.7" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="436.7" cy="165.9" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="485.8" cy="169.0" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="534.9" cy="170.6" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><circle cx="584.0" cy="172.1" r="3.2" fill="#fff" stroke="#7FA6E6" stroke-width="2"/><text x="578.0" y="163.1" font-size="11.5" font-weight="700" fill="#7FA6E6" text-anchor="end">78</text></svg></div>
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 20px"><div style="font-weight: 800; margin-bottom: 4px">LDL-c</div><div style="font-size: 13px; color: #52627F; margin-bottom: 8px">g/L · objectif selon niveau de risque</div><svg viewBox="0 0 600 170" width="100%" role="img" aria-label="LDL-c vs objectif" font-family="'Plus Jakarta Sans',system-ui,sans-serif" style="display:block"><line x1="44" x2="584" y1="140.0" y2="140.0" stroke="#E3E9F4"/><text x="36" y="144.0" font-size="11" fill="#52627F" text-anchor="end">0</text><line x1="44" x2="584" y1="98.0" y2="98.0" stroke="#E3E9F4"/><text x="36" y="102.0" font-size="11" fill="#52627F" text-anchor="end">0.6</text><line x1="44" x2="584" y1="56.0" y2="56.0" stroke="#E3E9F4"/><text x="36" y="60.0" font-size="11" fill="#52627F" text-anchor="end">1.2</text><line x1="44" x2="584" y1="14.0" y2="14.0" stroke="#E3E9F4"/><text x="36" y="18.0" font-size="11" fill="#52627F" text-anchor="end">1.8</text><text x="44.0" y="161" font-size="11" fill="#52627F" text-anchor="middle">03/24</text><text x="142.2" y="161" font-size="11" fill="#52627F" text-anchor="middle">09/24</text><text x="240.4" y="161" font-size="11" fill="#52627F" text-anchor="middle">02/25</text><text x="338.5" y="161" font-size="11" fill="#52627F" text-anchor="middle">08/25</text><text x="436.7" y="161" font-size="11" fill="#52627F" text-anchor="middle">02/26</text><text x="534.9" y="161" font-size="11" fill="#52627F" text-anchor="middle">08/26</text><text x="584.0" y="161" font-size="11" fill="#52627F" text-anchor="middle">11/26</text><line x1="44" x2="584" y1="101.5" y2="101.5" stroke="#0F7A4D" stroke-dasharray="5 4" stroke-width="1.4"/><text x="580" y="96.5" font-size="10.5" font-weight="700" fill="#0F7A4D" text-anchor="end">Objectif 0,55 g/L</text><polyline points="44.0,26.6 93.1,41.3 142.2,61.6 191.3,71.4 240.4,79.8 289.5,88.2 338.5,91.7 387.6,90.3 436.7,96.6 485.8,99.4 534.9,101.5 584.0,102.9" fill="none" stroke="#0B4FB3" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="44.0" cy="26.6" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="93.1" cy="41.3" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="142.2" cy="61.6" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="191.3" cy="71.4" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="240.4" cy="79.8" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="289.5" cy="88.2" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="338.5" cy="91.7" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="387.6" cy="90.3" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="436.7" cy="96.6" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="485.8" cy="99.4" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="534.9" cy="101.5" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="584.0" cy="102.9" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><text x="578.0" y="93.9" font-size="11.5" font-weight="700" fill="#0B4FB3" text-anchor="end">0.53</text></svg></div>
+<div style="border: 1px solid #E3E9F4; border-radius: 16px; padding: 20px"><div style="font-weight: 800; margin-bottom: 4px">Aorte ascendante</div><div style="font-size: 13px; color: #52627F; margin-bottom: 8px">mm · mesures datées par segment</div><svg viewBox="0 0 640 260" width="100%" role="img" aria-label="Diamètre de l'aorte ascendante tubulaire" font-family="'Plus Jakarta Sans',system-ui,sans-serif" style="display:block"><line x1="44" x2="624" y1="230.0" y2="230.0" stroke="#E3E9F4"/><text x="36" y="234.0" font-size="11" fill="#52627F" text-anchor="end">35</text><line x1="44" x2="624" y1="194.0" y2="194.0" stroke="#E3E9F4"/><text x="36" y="198.0" font-size="11" fill="#52627F" text-anchor="end">40</text><line x1="44" x2="624" y1="158.0" y2="158.0" stroke="#E3E9F4"/><text x="36" y="162.0" font-size="11" fill="#52627F" text-anchor="end">45</text><line x1="44" x2="624" y1="122.0" y2="122.0" stroke="#E3E9F4"/><text x="36" y="126.0" font-size="11" fill="#52627F" text-anchor="end">50</text><line x1="44" x2="624" y1="86.0" y2="86.0" stroke="#E3E9F4"/><text x="36" y="90.0" font-size="11" fill="#52627F" text-anchor="end">55</text><line x1="44" x2="624" y1="50.0" y2="50.0" stroke="#E3E9F4"/><text x="36" y="54.0" font-size="11" fill="#52627F" text-anchor="end">60</text><line x1="44" x2="624" y1="14.0" y2="14.0" stroke="#E3E9F4"/><text x="36" y="18.0" font-size="11" fill="#52627F" text-anchor="end">65</text><text x="44.0" y="251" font-size="11" fill="#52627F" text-anchor="middle">2019</text><text x="126.9" y="251" font-size="11" fill="#52627F" text-anchor="middle">2020</text><text x="209.7" y="251" font-size="11" fill="#52627F" text-anchor="middle">2021</text><text x="292.6" y="251" font-size="11" fill="#52627F" text-anchor="middle">2022</text><text x="375.4" y="251" font-size="11" fill="#52627F" text-anchor="middle">2023</text><text x="458.3" y="251" font-size="11" fill="#52627F" text-anchor="middle">2024</text><text x="541.1" y="251" font-size="11" fill="#52627F" text-anchor="middle">2025</text><text x="624.0" y="251" font-size="11" fill="#52627F" text-anchor="middle">2026</text><line x1="44" x2="624" y1="86.0" y2="86.0" stroke="#B45309" stroke-dasharray="5 4" stroke-width="1.4"/><text x="620" y="81.0" font-size="10.5" font-weight="700" fill="#B45309" text-anchor="end">Seuil configurable 55 mm</text><line x1="44" x2="624" y1="122.0" y2="122.0" stroke="#7C8AA5" stroke-dasharray="5 4" stroke-width="1.4"/><text x="620" y="117.0" font-size="10.5" font-weight="700" fill="#7C8AA5" text-anchor="end">50 mm</text><polyline points="44.0,150.8 126.9,143.6 209.7,136.4 292.6,122.0 375.4,107.6 458.3,93.2 541.1,71.6 624.0,50.0" fill="none" stroke="#D42A35" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="44.0" cy="150.8" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="126.9" cy="143.6" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="209.7" cy="136.4" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="292.6" cy="122.0" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="375.4" cy="107.6" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="458.3" cy="93.2" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="541.1" cy="71.6" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="624.0" cy="50.0" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><text x="618.0" y="41.0" font-size="11.5" font-weight="700" fill="#D42A35" text-anchor="end">60 mm</text><polyline points="44.0,186.8 126.9,186.8 209.7,179.6 292.6,179.6 375.4,172.4 458.3,172.4 541.1,165.2 624.0,158.0" fill="none" stroke="#0B4FB3" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4"/><circle cx="44.0" cy="186.8" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="126.9" cy="186.8" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="209.7" cy="179.6" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="292.6" cy="179.6" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="375.4" cy="172.4" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="458.3" cy="172.4" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="541.1" cy="165.2" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="624.0" cy="158.0" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><text x="618.0" y="149.0" font-size="11.5" font-weight="700" fill="#0B4FB3" text-anchor="end">45 mm</text></svg></div>
+</div>
+</section>
+
+<!-- Multi-tenant -->
+<section style="background: #0A1F44; color: #FFFFFF">
+<div style="max-width: 1240px; margin: 0 auto; padding: 80px 32px; display: flex; flex-direction: column; gap: 36px">
+<h2 style="margin: 0; font-size: 36px; font-weight: 800; letter-spacing: -0.6px">Votre espace cabinet, isolé, en 3 minutes.</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px">
+<div style="background: #13305F; border-radius: 16px; padding: 26px"><div style="font-size: 32px; font-weight: 800; color: #FF6B73">1</div><h3 style="margin: 8px 0; font-size: 19px">Créez votre compte</h3><p style="margin: 0; color: #C3D1EA; line-height: 1.55">Identité, numéro RPPS et adresse du cabinet.</p></div>
+<div style="background: #13305F; border-radius: 16px; padding: 26px"><div style="font-size: 32px; font-weight: 800; color: #FF6B73">2</div><h3 style="margin: 8px 0; font-size: 19px">Choisissez votre adresse</h3><p style="margin: 0; color: #C3D1EA; line-height: 1.55"><strong style="color: #FFFFFF">votre-cabinet</strong>.cardioconsult.fr — base de données dédiée à votre tenant.</p></div>
+<div style="background: #13305F; border-radius: 16px; padding: 26px"><div style="font-size: 32px; font-weight: 800; color: #FF6B73">3</div><h3 style="margin: 8px 0; font-size: 19px">Invitez votre équipe</h3><p style="margin: 0; color: #C3D1EA; line-height: 1.55">Médecins et infirmières, chacun avec ses droits.</p></div>
+</div>
+</div>
+</section>
+
+<!-- Sécurité -->
+<section id="securite" style="max-width: 1240px; margin: 0 auto; padding: 80px 32px; display: flex; gap: 48px; flex-wrap: wrap">
+<div style="flex: 1 1 380px; min-width: 0">
+<p style="margin: 0 0 10px; font-size: 14px; font-weight: 800; color: #D42A35; letter-spacing: 1.5px; text-transform: uppercase">Sécurité & conformité</p>
+<h2 style="margin: 0 0 16px; font-size: 36px; font-weight: 800; letter-spacing: -0.6px">Le secret médical, par conception.</h2>
+<p style="margin: 0; font-size: 16px; color: #3E4D6A; line-height: 1.65">Les scores et alertes sont des aides à la documentation et au raisonnement : ils affichent leur source, leur version et les données manquantes, et ne remplacent jamais le jugement du cardiologue.</p>
+</div>
+<ul style="flex: 1 1 480px; min-width: 0; margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px">
+<li style="border: 1px solid #E3E9F4; border-radius: 14px; padding: 18px; font-weight: 600">Isolation stricte par tenant</li>
+<li style="border: 1px solid #E3E9F4; border-radius: 14px; padding: 18px; font-weight: 600">Authentification forte (MFA)</li>
+<li style="border: 1px solid #E3E9F4; border-radius: 14px; padding: 18px; font-weight: 600">Journal d'audit horodaté</li>
+<li style="border: 1px solid #E3E9F4; border-radius: 14px; padding: 18px; font-weight: 600">Notes signées versionnées</li>
+<li style="border: 1px solid #E3E9F4; border-radius: 14px; padding: 18px; font-weight: 600">Sauvegardes chiffrées testées</li>
+<li style="border: 1px solid #E3E9F4; border-radius: 14px; padding: 18px; font-weight: 600">Export RGPD de vos données</li>
+</ul>
+</section>
+
+<!-- Tarifs -->
+<section id="tarifs" style="background: #F4F7FC; border-top: 1px solid #E3E9F4">
+<div style="max-width: 1240px; margin: 0 auto; padding: 80px 32px">
+<h2 style="margin: 0 0 36px; font-size: 36px; font-weight: 800; text-align: center">Une offre par taille de structure</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
+<div style="background: #FFFFFF; border: 1px solid #DCE4F2; border-radius: 18px; padding: 28px; display: flex; flex-direction: column; gap: 14px">
+<h3 style="margin: 0; font-size: 20px">Solo</h3><div style="font-size: 34px; font-weight: 800">[PRIX] <span style="font-size: 15px; font-weight: 600; color: #52627F">€ HT / mois</span></div>
+<p style="margin: 0; color: #3E4D6A">1 cardiologue · 1 infirmière</p>
+<a href="02-inscription-creation-du-tenant.html" style="text-align: center; font-weight: 700; color: #0B4FB3; border: 1px solid #0B4FB3; border-radius: 10px; padding: 13px; text-decoration: none">Commencer l'essai</a>
+</div>
+<div style="background: #FFFFFF; border: 2px solid #0B4FB3; border-radius: 18px; padding: 28px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center"><h3 style="margin: 0; font-size: 20px">Cabinet</h3><span style="font-size: 12px; font-weight: 800; color: #FFFFFF; background: #D42A35; padding: 4px 10px; border-radius: 999px">Le plus choisi</span></div>
+<div style="font-size: 34px; font-weight: 800">[PRIX] <span style="font-size: 15px; font-weight: 600; color: #52627F">€ HT / mois</span></div>
+<p style="margin: 0; color: #3E4D6A">Jusqu'à 5 médecins · statistiques avancées</p>
+<a href="02-inscription-creation-du-tenant.html" style="text-align: center; font-weight: 700; color: #FFFFFF; background: #0B4FB3; border-radius: 10px; padding: 14px; text-decoration: none">Commencer l'essai</a>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #DCE4F2; border-radius: 18px; padding: 28px; display: flex; flex-direction: column; gap: 14px">
+<h3 style="margin: 0; font-size: 20px">Clinique / service</h3><div style="font-size: 34px; font-weight: 800">Sur devis</div>
+<p style="margin: 0; color: #3E4D6A">Vue hospitalisation · SSO établissement</p>
+<a href="#tarifs" style="text-align: center; font-weight: 700; color: #0B4FB3; border: 1px solid #0B4FB3; border-radius: 10px; padding: 13px; text-decoration: none">Nous contacter</a>
+</div>
+</div>
+</div>
+</section>
+
+<footer style="background: #0A1F44; color: #C3D1EA">
+<div style="max-width: 1240px; margin: 0 auto; padding: 44px 32px; display: flex; gap: 32px; flex-wrap: wrap; justify-content: space-between; align-items: flex-start">
+<img src="assets/logo-sombre.svg" alt="CardioConsult" style="height: 48px; width: auto; border-radius: 8px">
+<nav aria-label="Liens légaux" style="display: flex; gap: 22px; flex-wrap: wrap; font-size: 14px">
+<a href="#tarifs" style="color: #C3D1EA">Mentions légales</a><a href="#tarifs" style="color: #C3D1EA">CGU</a><a href="#tarifs" style="color: #C3D1EA">Politique de confidentialité</a><a href="#tarifs" style="color: #C3D1EA">Contact DPO</a>
+</nav>
+<p style="flex: 1 1 100%; margin: 0; font-size: 12.5px; line-height: 1.6; color: #9FB3D9">* Hébergeur certifié HDS à contractualiser avant toute mise en production. CardioConsult est un outil d'aide à la documentation clinique ; les scores et alertes ne constituent pas une décision médicale.</p>
+</div>
+</footer>
+</div>
+</template>
+<div id="dc-app"></div>
+<a href="index.html" style="position:fixed;right:16px;bottom:16px;z-index:50;font:700 13px 'Plus Jakarta Sans',system-ui,sans-serif;color:#fff;background:#0A1F44;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(10,31,68,.25)">← Tous les écrans</a>
+<script id="dc-logic" type="text/plain">
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+<script>
+/* Mini-runtime CardioConsult (export HTML autonome).
+   Rend le gabarit <template id="dc-tpl"> avec la classe Component :
+   {{trous}}, <template data-for>, <template data-if>, onClick / onChange. */
+(function () {
+  function DCLogic(props) { this.props = props || {}; this.state = {}; }
+  DCLogic.prototype.setState = function (p) {
+    var patch = typeof p === 'function' ? p(this.state, this.props) : p;
+    this.state = Object.assign({}, this.state, patch);
+    if (this.__render) this.__render();
+  };
+  DCLogic.prototype.forceUpdate = function () { if (this.__render) this.__render(); };
+  DCLogic.prototype.renderVals = function () { return {}; };
+
+  var WHOLE = /^\{\{\s*([^}]+?)\s*\}\}$/;
+  var ANY = /\{\{\s*([^}]+?)\s*\}\}/g;
+
+  function lookup(path, scope) {
+    path = path.trim();
+    if (path === 'true') return true;
+    if (path === 'false') return false;
+    if (path === 'null') return null;
+    if (/^-?\d+(\.\d+)?$/.test(path)) return Number(path);
+    var parts = path.split('.'), v = scope;
+    for (var i = 0; i < parts.length; i++) {
+      if (v == null) return undefined;
+      v = v[parts[i]];
+    }
+    return v;
+  }
+  function interp(str, scope) {
+    return str.replace(ANY, function (_, p) { var v = lookup(p, scope); return v == null ? '' : String(v); });
+  }
+  function eventName(el, attr) {
+    var n = attr.slice(2).toLowerCase();
+    if (n === 'change') {
+      var t = (el.getAttribute('type') || '').toLowerCase();
+      if (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && t !== 'checkbox' && t !== 'radio')) return 'input';
+    }
+    return n;
+  }
+  function procChildren(parent, scope) {
+    var kids = Array.prototype.slice.call(parent.childNodes);
+    for (var i = 0; i < kids.length; i++) proc(kids[i], scope);
+  }
+  function proc(node, scope) {
+    if (node.nodeType === 3) {
+      if (node.nodeValue.indexOf('{{') !== -1) node.nodeValue = interp(node.nodeValue, scope);
+      return;
+    }
+    if (node.nodeType !== 1) return;
+    if (node.tagName === 'TEMPLATE' && node.hasAttribute('data-for')) {
+      var list = lookup(node.getAttribute('data-for'), scope) || [];
+      var as = node.getAttribute('data-as') || 'item';
+      var frag = document.createDocumentFragment();
+      for (var k = 0; k < list.length; k++) {
+        var c = node.content.cloneNode(true);
+        var s = Object.assign({}, scope); s[as] = list[k]; s.$index = k;
+        procChildren(c, s);
+        frag.appendChild(c);
+      }
+      node.parentNode.replaceChild(frag, node);
+      return;
+    }
+    if (node.tagName === 'TEMPLATE' && node.hasAttribute('data-if')) {
+      if (lookup(node.getAttribute('data-if'), scope)) {
+        var c2 = node.content.cloneNode(true);
+        procChildren(c2, scope);
+        node.parentNode.replaceChild(c2, node);
+      } else {
+        node.parentNode.removeChild(node);
+      }
+      return;
+    }
+    var attrs = Array.prototype.slice.call(node.attributes);
+    for (var a = 0; a < attrs.length; a++) {
+      var name = attrs[a].name, val = attrs[a].value;
+      if (name.indexOf('hint-') === 0) { node.removeAttribute(name); continue; }
+      if (name.indexOf('on') === 0) {
+        node.removeAttribute(name);
+        var m = val.match(WHOLE);
+        var fn = m ? lookup(m[1], scope) : null;
+        if (typeof fn === 'function') node.addEventListener(eventName(node, name), fn);
+        continue;
+      }
+      if (val.indexOf('{{') === -1) continue;
+      var w = val.match(WHOLE);
+      if (w) {
+        var v = lookup(w[1], scope);
+        if (typeof v === 'boolean') { if (v) node.setAttribute(name, ''); else node.removeAttribute(name); }
+        else node.setAttribute(name, v == null ? '' : String(v));
+      } else {
+        node.setAttribute(name, interp(val, scope));
+      }
+    }
+    procChildren(node, scope);
+  }
+
+  function boot() {
+    var tpl = document.getElementById('dc-tpl');
+    var app = document.getElementById('dc-app');
+    var code = document.getElementById('dc-logic').textContent;
+    var Component = new Function('DCLogic', code + '\n;return Component;')(DCLogic);
+    var inst = new Component({});
+    inst.__render = function () {
+      var act = document.activeElement, id = act && act.id, s0 = null, s1 = null;
+      try { s0 = act.selectionStart; s1 = act.selectionEnd; } catch (e) {}
+      var frag = tpl.content.cloneNode(true);
+      procChildren(frag, inst.renderVals() || {});
+      app.replaceChildren(frag);
+      if (id) {
+        var el = document.getElementById(id);
+        if (el) { el.focus(); try { if (s0 != null) el.setSelectionRange(s0, s1); } catch (e) {} }
+      }
+    };
+    inst.__render();
+    if (inst.componentDidMount) inst.componentDidMount();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+
+</script>
+</body>
+</html>

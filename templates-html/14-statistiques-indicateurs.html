@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Statistiques et indicateurs — CardioConsult (template)</title>
+<link rel="icon" href="assets/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F7FC;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#0A1F44}
+a{color:#0B4FB3}a:hover{color:#083A85}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid #9DBCF0;outline-offset:1px}
+</style>
+</head>
+<body>
+<template id="dc-tpl">
+
+<div style="min-height: 1400px; display: flex; flex-wrap: wrap; background: #F4F7FC; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #0A1F44">
+<aside style="flex: 1 1 248px; max-width: 264px; background: #FFFFFF; border-right: 1px solid #E3E9F4; padding: 22px 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+<a href="04-tableau-de-bord-medecin.html" style="padding: 0 6px"><img src="assets/logo-clair.svg" alt="CardioConsult — accueil" style="width: 190px; height: auto"></a>
+<div style="background: #F4F7FC; border: 1px solid #E3E9F4; border-radius: 12px; padding: 10px 12px"><div style="font-size: 13px; font-weight: 700">Cabinet de cardiologie Martin</div><div style="font-size: 12px; color: #52627F">dr-martin.cardioconsult.fr</div></div>
+<nav aria-label="Navigation de l'application" style="display: flex; flex-direction: column; gap: 2px"><a href="04-tableau-de-bord-medecin.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Tableau de bord</a><a href="05-agenda.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</a><a href="06-liste-des-patients.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Patients</a><a href="08-consultation-guidee-ett.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Consultation</a><a href="13-hospitalisation-vue-du-service.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18V6M3 14h18v4M21 14v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="10.5" r="2"/></svg>Hospitalisation</a><a href="11-compte-rendu.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></svg>Comptes rendus</a><a href="12-ordonnance.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7z"/><path d="M7 7l7 7"/></svg>Ordonnances</a><a href="14-statistiques-indicateurs.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; background: #EAF1FD; color: #0B4FB3; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Statistiques</a><a href="17-parametres-equipe-roles.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Paramètres</a></nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; border-top: 1px solid #E3E9F4; padding: 16px 6px 0">
+<span style="width: 38px; height: 38px; border-radius: 50%; background: #EAF1FD; color: #0B4FB3; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex: none">CM</span>
+<span style="font-size: 13px; line-height: 1.35"><strong>Dr Claire Martin</strong><br><span style="color: #52627F">Médecin · admin cabinet</span></span>
+</div>
+</aside>
+<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+<header style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 18px 32px; background: #FFFFFF; border-bottom: 1px solid #E3E9F4">
+<div style="flex: 1 1 260px; min-width: 0"><h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.4px">Statistiques du cabinet</h1><p style="margin: 2px 0 0; font-size: 14px; color: #52627F">File active · indicateurs de qualité · données agrégées fictives</p></div>
+<label style="flex: 0 1 360px; display: flex; align-items: center; gap: 8px; border: 1px solid #DCE4F2; background: #F4F7FC; border-radius: 10px; padding: 0 12px; color: #52627F"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input aria-label="Rechercher un patient" placeholder="Patient, n° de dossier, INS…" style="flex: 1; min-width: 0; border: none; background: transparent; font: inherit; font-size: 14px; padding: 11px 0; color: #0A1F44"><kbd style="font: inherit; font-size: 12px; color: #52627F; border: 1px solid #DCE4F2; border-radius: 6px; padding: 1px 6px; background: #FFFFFF">Ctrl K</kbd></label>
+<button type="button" aria-label="Notifications (3 nouvelles)" style="position: relative; width: 44px; height: 44px; border-radius: 10px; border: 1px solid #DCE4F2; background: #FFFFFF; color: #0A1F44; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg><span style="position: absolute; top: 8px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: #D42A35"></span></button>
+<a href="08-consultation-guidee-ett.html" style="display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; color: #FFFFFF; background: #0B4FB3; text-decoration: none; padding: 12px 16px; border-radius: 10px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nouvelle consultation</a>
+</header>
+<main style="padding: 24px 32px 40px; display: flex; flex-direction: column; gap: 20px">
+
+<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end">
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="per" style="font-size: 13px; font-weight: 700">Période</label><select id="per" style="font: inherit; font-size: 14px; padding: 10px 12px; border: 1.5px solid #C9D5EA; border-radius: 10px; background: #FFFFFF; color: #0A1F44"><option>12 derniers mois</option><option>Année 2026</option><option>Depuis l'ouverture</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="doc" style="font-size: 13px; font-weight: 700">Médecin</label><select id="doc" style="font: inherit; font-size: 14px; padding: 10px 12px; border: 1.5px solid #C9D5EA; border-radius: 10px; background: #FFFFFF; color: #0A1F44"><option>Tout le cabinet</option><option>Dr C. Martin</option><option>Dr A. Roche</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="pat" style="font-size: 13px; font-weight: 700">Pathologie</label><select id="pat" style="font: inherit; font-size: 14px; padding: 10px 12px; border: 1.5px solid #C9D5EA; border-radius: 10px; background: #FFFFFF; color: #0A1F44"><option>Toutes</option><option>Insuffisance cardiaque</option><option>FA</option><option>Coronaire</option></select></div>
+<span style="flex: 1"></span>
+<button type="button" style="font: inherit; font-size: 14px; font-weight: 700; color: #0A1F44; background: #FFFFFF; border: 1px solid #C9D5EA; border-radius: 10px; padding: 11px 16px; cursor: pointer">Exporter (agrégé, sans identité)</button>
+</div>
+
+<section aria-label="Indicateurs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+<div style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; padding: 16px 18px"><div style="font-size: 13px; font-weight: 600; color: #52627F">File active</div><div style="font-size: 28px; font-weight: 800">1 284</div><div style="font-size: 12.5px; color: #52627F">patients vus sur 12 mois</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; padding: 16px 18px"><div style="font-size: 13px; font-weight: 600; color: #52627F">Nouveaux patients</div><div style="font-size: 28px; font-weight: 800">326</div><div style="font-size: 12.5px; color: #0F7A4D; font-weight: 700">+12 %</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; padding: 16px 18px"><div style="font-size: 13px; font-weight: 600; color: #52627F">ETT réalisées</div><div style="font-size: 28px; font-weight: 800">689</div><div style="font-size: 12.5px; color: #52627F">dont 41 % de contrôle</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; padding: 16px 18px"><div style="font-size: 13px; font-weight: 600; color: #52627F">Délai CR → validation</div><div style="font-size: 28px; font-weight: 800">1,4 h</div><div style="font-size: 12.5px; color: #0F7A4D; font-weight: 700">−35 min</div></div>
+<div style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; padding: 16px 18px"><div style="font-size: 13px; font-weight: 600; color: #52627F">Perdus de vue IC</div><div style="font-size: 28px; font-weight: 800; color: #B81E2A">7</div><div style="font-size: 12.5px; color: #52627F">sans consultation &gt; 9 mois</div></div>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 20px">
+<section style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; padding: 18px 20px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 800">Distribution de la FEVG</h2>
+<p style="margin: 2px 0 8px; font-size: 13px; color: #52627F">Dernière ETT de chaque patient · rouge FEVG réduite, orange modérément réduite, vert préservée</p>
+<svg viewBox="0 0 600 230" width="100%" role="img" aria-label="Distribution de la FEVG des patients suivis" font-family="'Plus Jakarta Sans',system-ui,sans-serif" style="display:block"><line x1="40" x2="590" y1="200.0" y2="200.0" stroke="#E3E9F4"/><text x="32" y="204.0" font-size="11" fill="#52627F" text-anchor="end">0</text><line x1="40" x2="590" y1="153.5" y2="153.5" stroke="#E3E9F4"/><text x="32" y="157.5" font-size="11" fill="#52627F" text-anchor="end">65</text><line x1="40" x2="590" y1="107.0" y2="107.0" stroke="#E3E9F4"/><text x="32" y="111.0" font-size="11" fill="#52627F" text-anchor="end">130</text><line x1="40" x2="590" y1="60.5" y2="60.5" stroke="#E3E9F4"/><text x="32" y="64.5" font-size="11" fill="#52627F" text-anchor="end">195</text><line x1="40" x2="590" y1="14.0" y2="14.0" stroke="#E3E9F4"/><text x="32" y="18.0" font-size="11" fill="#52627F" text-anchor="end">260</text><rect x="57.4" y="172.8" width="56.8" height="27.2" rx="3" fill="#D42A35"/><text x="85.8" y="221" font-size="11" fill="#52627F" text-anchor="middle">&lt;30</text><text x="85.8" y="167.8" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">38</text><rect x="149.1" y="147.1" width="56.8" height="52.9" rx="3" fill="#D42A35"/><text x="177.5" y="221" font-size="11" fill="#52627F" text-anchor="middle">30-39</text><text x="177.5" y="142.1" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">74</text><rect x="240.7" y="131.3" width="56.8" height="68.7" rx="3" fill="#B45309"/><text x="269.2" y="221" font-size="11" fill="#52627F" text-anchor="middle">40-49</text><text x="269.2" y="126.3" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">96</text><rect x="332.4" y="65.5" width="56.8" height="134.5" rx="3" fill="#0F7A4D"/><text x="360.8" y="221" font-size="11" fill="#52627F" text-anchor="middle">50-59</text><text x="360.8" y="60.5" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">188</text><rect x="424.1" y="27.6" width="56.8" height="172.4" rx="3" fill="#0F7A4D"/><text x="452.5" y="221" font-size="11" fill="#52627F" text-anchor="middle">60-69</text><text x="452.5" y="22.6" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">241</text><rect x="515.8" y="162.8" width="56.8" height="37.2" rx="3" fill="#0F7A4D"/><text x="544.2" y="221" font-size="11" fill="#52627F" text-anchor="middle">≥70</text><text x="544.2" y="157.8" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">52</text></svg>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; padding: 18px 20px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 800">CHA₂DS₂-VA des patients en FA</h2>
+<p style="margin: 2px 0 8px; font-size: 13px; color: #52627F">269 patients · scores complets uniquement (32 incomplets exclus)</p>
+<svg viewBox="0 0 600 230" width="100%" role="img" aria-label="Distribution du CHA2DS2-VA chez les patients en FA" font-family="'Plus Jakarta Sans',system-ui,sans-serif" style="display:block"><line x1="40" x2="590" y1="200.0" y2="200.0" stroke="#E3E9F4"/><text x="32" y="204.0" font-size="11" fill="#52627F" text-anchor="end">0</text><line x1="40" x2="590" y1="153.5" y2="153.5" stroke="#E3E9F4"/><text x="32" y="157.5" font-size="11" fill="#52627F" text-anchor="end">20</text><line x1="40" x2="590" y1="107.0" y2="107.0" stroke="#E3E9F4"/><text x="32" y="111.0" font-size="11" fill="#52627F" text-anchor="end">40</text><line x1="40" x2="590" y1="60.5" y2="60.5" stroke="#E3E9F4"/><text x="32" y="64.5" font-size="11" fill="#52627F" text-anchor="end">60</text><line x1="40" x2="590" y1="14.0" y2="14.0" stroke="#E3E9F4"/><text x="32" y="18.0" font-size="11" fill="#52627F" text-anchor="end">80</text><rect x="54.9" y="167.4" width="48.7" height="32.6" rx="3" fill="#0A1F44"/><text x="79.3" y="221" font-size="11" fill="#52627F" text-anchor="middle">0</text><text x="79.3" y="162.4" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">14</text><rect x="133.5" y="127.9" width="48.7" height="72.1" rx="3" fill="#0A1F44"/><text x="157.9" y="221" font-size="11" fill="#52627F" text-anchor="middle">1</text><text x="157.9" y="122.9" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">31</text><rect x="212.1" y="65.2" width="48.7" height="134.8" rx="3" fill="#0A1F44"/><text x="236.4" y="221" font-size="11" fill="#52627F" text-anchor="middle">2</text><text x="236.4" y="60.2" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">58</text><rect x="290.6" y="32.6" width="48.7" height="167.4" rx="3" fill="#0A1F44"/><text x="315.0" y="221" font-size="11" fill="#52627F" text-anchor="middle">3</text><text x="315.0" y="27.6" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">72</text><rect x="369.2" y="86.1" width="48.7" height="113.9" rx="3" fill="#0A1F44"/><text x="393.6" y="221" font-size="11" fill="#52627F" text-anchor="middle">4</text><text x="393.6" y="81.1" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">49</text><rect x="447.8" y="134.9" width="48.7" height="65.1" rx="3" fill="#0A1F44"/><text x="472.1" y="221" font-size="11" fill="#52627F" text-anchor="middle">5</text><text x="472.1" y="129.9" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">28</text><rect x="526.4" y="160.5" width="48.7" height="39.5" rx="3" fill="#0A1F44"/><text x="550.7" y="221" font-size="11" fill="#52627F" text-anchor="middle">6+</text><text x="550.7" y="155.5" font-size="11" font-weight="700" fill="#0A1F44" text-anchor="middle">17</text></svg>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; padding: 18px 20px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 800">Atteinte des objectifs thérapeutiques</h2>
+<p style="margin: 2px 0 12px; font-size: 13px; color: #52627F">Objectifs définis par le cabinet · patients concernés uniquement</p>
+<svg viewBox="0 0 560 176" width="100%" role="img" aria-label="Atteinte des objectifs thérapeutiques" font-family="'Plus Jakarta Sans',system-ui,sans-serif" style="display:block"><text x="160" y="22" font-size="12" fill="#0A1F44" text-anchor="end">LDL-c à l'objectif</text><rect x="170" y="10" width="330" height="16" rx="8" fill="#EEF2F8"/><rect x="170" y="10" width="201.3" height="16" rx="8" fill="#0B4FB3"/><text x="379.3" y="22" font-size="12" font-weight="700" fill="#0A1F44">61%</text><text x="160" y="56" font-size="12" fill="#0A1F44" text-anchor="end">TA contrôlée &lt; 140/90</text><rect x="170" y="44" width="330" height="16" rx="8" fill="#EEF2F8"/><rect x="170" y="44" width="237.6" height="16" rx="8" fill="#0B4FB3"/><text x="415.6" y="56" font-size="12" font-weight="700" fill="#0A1F44">72%</text><text x="160" y="90" font-size="12" fill="#0A1F44" text-anchor="end">IC : 4 piliers prescrits</text><rect x="170" y="78" width="330" height="16" rx="8" fill="#EEF2F8"/><rect x="170" y="78" width="158.4" height="16" rx="8" fill="#D42A35"/><text x="336.4" y="90" font-size="12" font-weight="700" fill="#0A1F44">48%</text><text x="160" y="124" font-size="12" fill="#0A1F44" text-anchor="end">FA anticoagulée (si indiquée)</text><rect x="170" y="112" width="330" height="16" rx="8" fill="#EEF2F8"/><rect x="170" y="112" width="293.7" height="16" rx="8" fill="#0F7A4D"/><text x="471.7" y="124" font-size="12" font-weight="700" fill="#0A1F44">89%</text><text x="160" y="158" font-size="12" fill="#0A1F44" text-anchor="end">HbA1c &lt; 7 % (diabétiques)</text><rect x="170" y="146" width="330" height="16" rx="8" fill="#EEF2F8"/><rect x="170" y="146" width="188.1" height="16" rx="8" fill="#0E7490"/><text x="366.1" y="158" font-size="12" font-weight="700" fill="#0A1F44">57%</text></svg>
+</section>
+<section style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; padding: 18px 20px">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px"><h2 style="margin: 0; font-size: 16px; font-weight: 800">Cohorte IC : événements par trimestre</h2><div style="font-size: 13px; display: flex; gap: 14px"><span style="display: flex; gap: 6px; align-items: center"><span style="width: 14px; height: 3px; background: #D42A35"></span>Hospitalisations</span><span style="display: flex; gap: 6px; align-items: center"><span style="width: 14px; border-top: 3px dashed #0B4FB3"></span>Non programmées</span></div></div>
+<p style="margin: 2px 0 8px; font-size: 13px; color: #52627F">52 patients IC suivis</p>
+<svg viewBox="0 0 600 230" width="100%" role="img" aria-label="Hospitalisations pour IC par trimestre" font-family="'Plus Jakarta Sans',system-ui,sans-serif" style="display:block"><line x1="44" x2="584" y1="200.0" y2="200.0" stroke="#E3E9F4"/><text x="36" y="204.0" font-size="11" fill="#52627F" text-anchor="end">0</text><line x1="44" x2="584" y1="153.5" y2="153.5" stroke="#E3E9F4"/><text x="36" y="157.5" font-size="11" fill="#52627F" text-anchor="end">10</text><line x1="44" x2="584" y1="107.0" y2="107.0" stroke="#E3E9F4"/><text x="36" y="111.0" font-size="11" fill="#52627F" text-anchor="end">20</text><line x1="44" x2="584" y1="60.5" y2="60.5" stroke="#E3E9F4"/><text x="36" y="64.5" font-size="11" fill="#52627F" text-anchor="end">30</text><line x1="44" x2="584" y1="14.0" y2="14.0" stroke="#E3E9F4"/><text x="36" y="18.0" font-size="11" fill="#52627F" text-anchor="end">40</text><text x="44.0" y="221" font-size="11" fill="#52627F" text-anchor="middle">T1 25</text><text x="121.1" y="221" font-size="11" fill="#52627F" text-anchor="middle">T2 25</text><text x="198.3" y="221" font-size="11" fill="#52627F" text-anchor="middle">T3 25</text><text x="275.4" y="221" font-size="11" fill="#52627F" text-anchor="middle">T4 25</text><text x="352.6" y="221" font-size="11" fill="#52627F" text-anchor="middle">T1 26</text><text x="429.7" y="221" font-size="11" fill="#52627F" text-anchor="middle">T2 26</text><text x="506.9" y="221" font-size="11" fill="#52627F" text-anchor="middle">T3 26</text><text x="584.0" y="221" font-size="11" fill="#52627F" text-anchor="middle">T4 26</text><polyline points="44.0,111.7 121.1,120.9 198.3,116.3 275.4,134.9 352.6,139.6 429.7,148.8 506.9,153.5 584.0,158.2" fill="none" stroke="#D42A35" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="44.0" cy="111.7" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="121.1" cy="120.9" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="198.3" cy="116.3" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="275.4" cy="134.9" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="352.6" cy="139.6" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="429.7" cy="148.8" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="506.9" cy="153.5" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><circle cx="584.0" cy="158.2" r="3.2" fill="#fff" stroke="#D42A35" stroke-width="2"/><text x="578.0" y="149.2" font-size="11.5" font-weight="700" fill="#D42A35" text-anchor="end">9</text><polyline points="44.0,41.9 121.1,55.8 198.3,46.6 275.4,65.2 352.6,74.4 429.7,83.8 506.9,97.7 584.0,102.3" fill="none" stroke="#0B4FB3" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 4"/><circle cx="44.0" cy="41.9" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="121.1" cy="55.8" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="198.3" cy="46.6" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="275.4" cy="65.2" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="352.6" cy="74.4" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="429.7" cy="83.8" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="506.9" cy="97.7" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><circle cx="584.0" cy="102.3" r="3.2" fill="#fff" stroke="#0B4FB3" stroke-width="2"/><text x="578.0" y="93.3" font-size="11.5" font-weight="700" fill="#0B4FB3" text-anchor="end">21</text></svg>
+</section>
+</div>
+
+<section style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; overflow-x: auto">
+<div style="padding: 16px 20px; border-bottom: 1px solid #E3E9F4; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px"><h2 style="margin: 0; font-size: 16px; font-weight: 800">Patients IC à rappeler</h2><span style="font-size: 13px; color: #52627F">Liste de travail, visible par le médecin référent uniquement</span></div>
+<table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 640px">
+<thead><tr style="text-align: left; color: #52627F; font-size: 12.5px; background: #F9FBFE"><th style="padding: 10px 20px; font-weight: 700">Patient</th><th style="padding: 10px; font-weight: 700">Dernière consultation</th><th style="padding: 10px; font-weight: 700">FEVG</th><th style="padding: 10px; font-weight: 700">Motif du rappel</th><th style="padding: 10px 20px; font-weight: 700"><span style="position: absolute; left: -9999px">Action</span></th></tr></thead>
+<tbody>
+<tr style="border-top: 1px solid #EEF2F8"><td style="padding: 11px 20px; font-weight: 700">G. Fournier</td><td style="padding: 11px 10px">12/01/2026</td><td style="padding: 11px 10px; color: #B81E2A; font-weight: 700">31 %</td><td style="padding: 11px 10px">Sans consultation depuis 10 mois</td><td style="padding: 11px 20px"><a href="05-agenda.html" style="font-weight: 700">Planifier</a></td></tr>
+<tr style="border-top: 1px solid #EEF2F8"><td style="padding: 11px 20px; font-weight: 700">D. Petit</td><td style="padding: 11px 10px">12/11/2026</td><td style="padding: 11px 10px; color: #B81E2A; font-weight: 700">29 %</td><td style="padding: 11px 10px">Titration incomplète (2 piliers sur 4)</td><td style="padding: 11px 20px"><a href="07-dossier-patient-courbes.html" style="font-weight: 700">Ouvrir</a></td></tr>
+<tr style="border-top: 1px solid #EEF2F8"><td style="padding: 11px 20px; font-weight: 700">É. André</td><td style="padding: 11px 10px">03/12/2025</td><td style="padding: 11px 10px; color: #B45309; font-weight: 700">44 %</td><td style="padding: 11px 10px">ETT de contrôle non réalisée</td><td style="padding: 11px 20px"><a href="05-agenda.html" style="font-weight: 700">Planifier</a></td></tr>
+</tbody></table>
+</section>
+</main>
+</div>
+</div>
+</template>
+<div id="dc-app"></div>
+<a href="index.html" style="position:fixed;right:16px;bottom:16px;z-index:50;font:700 13px 'Plus Jakarta Sans',system-ui,sans-serif;color:#fff;background:#0A1F44;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(10,31,68,.25)">← Tous les écrans</a>
+<script id="dc-logic" type="text/plain">
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+<script>
+/* Mini-runtime CardioConsult (export HTML autonome).
+   Rend le gabarit <template id="dc-tpl"> avec la classe Component :
+   {{trous}}, <template data-for>, <template data-if>, onClick / onChange. */
+(function () {
+  function DCLogic(props) { this.props = props || {}; this.state = {}; }
+  DCLogic.prototype.setState = function (p) {
+    var patch = typeof p === 'function' ? p(this.state, this.props) : p;
+    this.state = Object.assign({}, this.state, patch);
+    if (this.__render) this.__render();
+  };
+  DCLogic.prototype.forceUpdate = function () { if (this.__render) this.__render(); };
+  DCLogic.prototype.renderVals = function () { return {}; };
+
+  var WHOLE = /^\{\{\s*([^}]+?)\s*\}\}$/;
+  var ANY = /\{\{\s*([^}]+?)\s*\}\}/g;
+
+  function lookup(path, scope) {
+    path = path.trim();
+    if (path === 'true') return true;
+    if (path === 'false') return false;
+    if (path === 'null') return null;
+    if (/^-?\d+(\.\d+)?$/.test(path)) return Number(path);
+    var parts = path.split('.'), v = scope;
+    for (var i = 0; i < parts.length; i++) {
+      if (v == null) return undefined;
+      v = v[parts[i]];
+    }
+    return v;
+  }
+  function interp(str, scope) {
+    return str.replace(ANY, function (_, p) { var v = lookup(p, scope); return v == null ? '' : String(v); });
+  }
+  function eventName(el, attr) {
+    var n = attr.slice(2).toLowerCase();
+    if (n === 'change') {
+      var t = (el.getAttribute('type') || '').toLowerCase();
+      if (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && t !== 'checkbox' && t !== 'radio')) return 'input';
+    }
+    return n;
+  }
+  function procChildren(parent, scope) {
+    var kids = Array.prototype.slice.call(parent.childNodes);
+    for (var i = 0; i < kids.length; i++) proc(kids[i], scope);
+  }
+  function proc(node, scope) {
+    if (node.nodeType === 3) {
+      if (node.nodeValue.indexOf('{{') !== -1) node.nodeValue = interp(node.nodeValue, scope);
+      return;
+    }
+    if (node.nodeType !== 1) return;
+    if (node.tagName === 'TEMPLATE' && node.hasAttribute('data-for')) {
+      var list = lookup(node.getAttribute('data-for'), scope) || [];
+      var as = node.getAttribute('data-as') || 'item';
+      var frag = document.createDocumentFragment();
+      for (var k = 0; k < list.length; k++) {
+        var c = node.content.cloneNode(true);
+        var s = Object.assign({}, scope); s[as] = list[k]; s.$index = k;
+        procChildren(c, s);
+        frag.appendChild(c);
+      }
+      node.parentNode.replaceChild(frag, node);
+      return;
+    }
+    if (node.tagName === 'TEMPLATE' && node.hasAttribute('data-if')) {
+      if (lookup(node.getAttribute('data-if'), scope)) {
+        var c2 = node.content.cloneNode(true);
+        procChildren(c2, scope);
+        node.parentNode.replaceChild(c2, node);
+      } else {
+        node.parentNode.removeChild(node);
+      }
+      return;
+    }
+    var attrs = Array.prototype.slice.call(node.attributes);
+    for (var a = 0; a < attrs.length; a++) {
+      var name = attrs[a].name, val = attrs[a].value;
+      if (name.indexOf('hint-') === 0) { node.removeAttribute(name); continue; }
+      if (name.indexOf('on') === 0) {
+        node.removeAttribute(name);
+        var m = val.match(WHOLE);
+        var fn = m ? lookup(m[1], scope) : null;
+        if (typeof fn === 'function') node.addEventListener(eventName(node, name), fn);
+        continue;
+      }
+      if (val.indexOf('{{') === -1) continue;
+      var w = val.match(WHOLE);
+      if (w) {
+        var v = lookup(w[1], scope);
+        if (typeof v === 'boolean') { if (v) node.setAttribute(name, ''); else node.removeAttribute(name); }
+        else node.setAttribute(name, v == null ? '' : String(v));
+      } else {
+        node.setAttribute(name, interp(val, scope));
+      }
+    }
+    procChildren(node, scope);
+  }
+
+  function boot() {
+    var tpl = document.getElementById('dc-tpl');
+    var app = document.getElementById('dc-app');
+    var code = document.getElementById('dc-logic').textContent;
+    var Component = new Function('DCLogic', code + '\n;return Component;')(DCLogic);
+    var inst = new Component({});
+    inst.__render = function () {
+      var act = document.activeElement, id = act && act.id, s0 = null, s1 = null;
+      try { s0 = act.selectionStart; s1 = act.selectionEnd; } catch (e) {}
+      var frag = tpl.content.cloneNode(true);
+      procChildren(frag, inst.renderVals() || {});
+      app.replaceChildren(frag);
+      if (id) {
+        var el = document.getElementById(id);
+        if (el) { el.focus(); try { if (s0 != null) el.setSelectionRange(s0, s1); } catch (e) {} }
+      }
+    };
+    inst.__render();
+    if (inst.componentDidMount) inst.componentDidMount();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+
+</script>
+</body>
+</html>

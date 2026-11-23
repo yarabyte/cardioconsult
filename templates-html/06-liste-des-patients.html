@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patients — CardioConsult (template)</title>
+<link rel="icon" href="assets/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F7FC;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#0A1F44}
+a{color:#0B4FB3}a:hover{color:#083A85}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid #9DBCF0;outline-offset:1px}
+</style>
+</head>
+<body>
+<template id="dc-tpl">
+
+<div style="min-height: 1000px; display: flex; flex-wrap: wrap; background: #F4F7FC; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #0A1F44">
+<aside style="flex: 1 1 248px; max-width: 264px; background: #FFFFFF; border-right: 1px solid #E3E9F4; padding: 22px 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px">
+<a href="04-tableau-de-bord-medecin.html" style="padding: 0 6px"><img src="assets/logo-clair.svg" alt="CardioConsult — accueil" style="width: 190px; height: auto"></a>
+<div style="background: #F4F7FC; border: 1px solid #E3E9F4; border-radius: 12px; padding: 10px 12px"><div style="font-size: 13px; font-weight: 700">Cabinet de cardiologie Martin</div><div style="font-size: 12px; color: #52627F">dr-martin.cardioconsult.fr</div></div>
+<nav aria-label="Navigation de l'application" style="display: flex; flex-direction: column; gap: 2px"><a href="04-tableau-de-bord-medecin.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Tableau de bord</a><a href="05-agenda.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</a><a href="06-liste-des-patients.html" aria-current="page" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; background: #EAF1FD; color: #0B4FB3; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.9.7 3.1 2.4 3.5 5.2"/></svg>Patients</a><a href="08-consultation-guidee-ett.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Consultation</a><a href="13-hospitalisation-vue-du-service.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18V6M3 14h18v4M21 14v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="10.5" r="2"/></svg>Hospitalisation</a><a href="11-compte-rendu.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></svg>Comptes rendus</a><a href="12-ordonnance.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7z"/><path d="M7 7l7 7"/></svg>Ordonnances</a><a href="14-statistiques-indicateurs.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Statistiques</a><a href="17-parametres-equipe-roles.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 10px; text-decoration: none; font-size: 14.5px; color: #2A3A5C; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Paramètres</a></nav>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 10px; border-top: 1px solid #E3E9F4; padding: 16px 6px 0">
+<span style="width: 38px; height: 38px; border-radius: 50%; background: #EAF1FD; color: #0B4FB3; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex: none">CM</span>
+<span style="font-size: 13px; line-height: 1.35"><strong>Dr Claire Martin</strong><br><span style="color: #52627F">Médecin · admin cabinet</span></span>
+</div>
+</aside>
+<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+<header style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 18px 32px; background: #FFFFFF; border-bottom: 1px solid #E3E9F4">
+<div style="flex: 1 1 260px; min-width: 0"><h1 style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.4px">Patients</h1><p style="margin: 2px 0 0; font-size: 14px; color: #52627F">1 284 dossiers actifs · patients fictifs</p></div>
+<label style="flex: 0 1 360px; display: flex; align-items: center; gap: 8px; border: 1px solid #DCE4F2; background: #F4F7FC; border-radius: 10px; padding: 0 12px; color: #52627F"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input aria-label="Rechercher un patient" placeholder="Patient, n° de dossier, INS…" style="flex: 1; min-width: 0; border: none; background: transparent; font: inherit; font-size: 14px; padding: 11px 0; color: #0A1F44"><kbd style="font: inherit; font-size: 12px; color: #52627F; border: 1px solid #DCE4F2; border-radius: 6px; padding: 1px 6px; background: #FFFFFF">Ctrl K</kbd></label>
+<button type="button" aria-label="Notifications (3 nouvelles)" style="position: relative; width: 44px; height: 44px; border-radius: 10px; border: 1px solid #DCE4F2; background: #FFFFFF; color: #0A1F44; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg><span style="position: absolute; top: 8px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: #D42A35"></span></button>
+<a href="08-consultation-guidee-ett.html" style="display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; color: #FFFFFF; background: #0B4FB3; text-decoration: none; padding: 12px 16px; border-radius: 10px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nouvelle consultation</a>
+</header>
+<main style="padding: 24px 32px 40px; display: flex; flex-direction: column; gap: 18px">
+
+<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center">
+<label for="q" style="position: absolute; left: -9999px">Filtrer par nom</label>
+<input id="q" value="{{q}}" onChange="{{onQ}}" placeholder="Filtrer par nom ou n° de dossier" style="flex: 1 1 280px; font: inherit; font-size: 15px; padding: 12px 14px; border: 1px solid #C9D5EA; border-radius: 10px; background: #FFFFFF; color: #0A1F44">
+<div role="group" aria-label="Pathologie" style="display: flex; gap: 8px; flex-wrap: wrap">
+<template data-for="chips" data-as="c">
+<button type="button" onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="font: inherit; font-size: 13.5px; font-weight: 700; padding: 9px 14px; border-radius: 999px; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}; cursor: pointer">{{c.label}}</button>
+</template>
+</div>
+<a href="08-consultation-guidee-ett.html" style="font-size: 14.5px; font-weight: 700; color: #0B4FB3; border: 1px solid #0B4FB3; background: #FFFFFF; text-decoration: none; padding: 11px 16px; border-radius: 10px">+ Nouveau patient</a>
+</div>
+
+<section style="background: #FFFFFF; border: 1px solid #E3E9F4; border-radius: 16px; overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 900px">
+<thead><tr style="text-align: left; color: #52627F; font-size: 12.5px; background: #F9FBFE"><th style="padding: 12px 20px; font-weight: 700">Patient</th><th style="padding: 12px 10px; font-weight: 700">Pathologies</th><th style="padding: 12px 10px; font-weight: 700">Dernière consultation</th><th style="padding: 12px 10px; font-weight: 700">FEVG</th><th style="padding: 12px 10px; font-weight: 700">Prochain RDV</th><th style="padding: 12px 10px; font-weight: 700">Alertes</th><th style="padding: 12px 20px; font-weight: 700"><span style="position: absolute; left: -9999px">Actions</span></th></tr></thead>
+<tbody>
+<template data-for="rows" data-as="p">
+<tr style="border-top: 1px solid #EEF2F8">
+<td style="padding: 13px 20px"><div style="display: flex; gap: 12px; align-items: center"><span style="width: 38px; height: 38px; border-radius: 10px; background: #EAF1FD; color: #0B4FB3; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 13px; flex: none">{{p.ini}}</span><span><a href="07-dossier-patient-courbes.html" style="font-weight: 700; color: #0A1F44">{{p.name}}</a><br><span style="color: #52627F; font-size: 12.5px">{{p.meta}}</span></span></div></td>
+<td style="padding: 13px 10px; color: #3E4D6A">{{p.tags}}</td>
+<td style="padding: 13px 10px">{{p.last}}</td>
+<td style="padding: 13px 10px; font-weight: 700; color: {{p.fevgColor}}">{{p.fevg}}</td>
+<td style="padding: 13px 10px">{{p.next}}</td>
+<td style="padding: 13px 10px"><template data-if="p.hasAlert"><span style="font-size: 12.5px; font-weight: 700; color: {{p.alertFg}}; background: {{p.alertBg}}; padding: 4px 10px; border-radius: 999px">{{p.alert}}</span></template></td>
+<td style="padding: 13px 20px; text-align: right"><a href="07-dossier-patient-courbes.html" style="font-weight: 700; font-size: 13.5px">Ouvrir</a></td>
+</tr>
+</template>
+</tbody>
+</table>
+<template data-if="empty">
+<p style="margin: 0; padding: 28px; text-align: center; color: #52627F">Aucun patient ne correspond à ce filtre.</p>
+</template>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-top: 1px solid #EEF2F8; font-size: 13.5px; color: #52627F; flex-wrap: wrap; gap: 10px"><span>{{count}} patient(s) affiché(s) sur 1 284</span><span>Les suppressions définitives sont désactivées : archivage selon la politique de conservation du cabinet.</span></div>
+</section>
+</main>
+</div>
+</div>
+</template>
+<div id="dc-app"></div>
+<a href="index.html" style="position:fixed;right:16px;bottom:16px;z-index:50;font:700 13px 'Plus Jakarta Sans',system-ui,sans-serif;color:#fff;background:#0A1F44;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 6px 18px rgba(10,31,68,.25)">← Tous les écrans</a>
+<script id="dc-logic" type="text/plain">
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { q: '', f: 'Tous' }; }
+  renderVals() {
+    var all = [
+      { name: 'Jeanne Dupont', meta: '67 ans · F · CC-000184', k: ['IC', 'FA'], last: '23/11/2026', fevg: '47 %', next: '22/02/2027', alert: 'NT-proBNP en baisse', lvl: 'ok' },
+      { name: 'Robert Lefèvre', meta: '71 ans · H · CC-000231', k: ['Aorte', 'HTA'], last: '23/11/2026', fevg: '58 %', next: 'À planifier', alert: 'RED FLAG aorte', lvl: 'red' },
+      { name: 'Mehdi Benali', meta: '58 ans · H · CC-000412', k: ['Coronaire'], last: '23/11/2026', fevg: '55 %', next: '—', alert: 'K+ à confirmer', lvl: 'warn' },
+      { name: 'Annie Girard', meta: '74 ans · F · CC-000097', k: ['FA'], last: '18/09/2026', fevg: '61 %', next: '23/11/2026', alert: 'QTc 512 ms', lvl: 'warn' },
+      { name: 'Lucas Moreau', meta: '45 ans · H · CC-001205', k: ['Coronaire'], last: '—', fevg: 'non renseignée', next: '23/11/2026', alert: '', lvl: '' },
+      { name: 'Hélène Rousseau', meta: '62 ans · F · CC-000655', k: ['HTA'], last: '02/06/2026', fevg: '64 %', next: '23/11/2026', alert: '', lvl: '' },
+      { name: 'Pierre Fontaine', meta: '66 ans · H · CC-000318', k: ['Coronaire', 'IC'], last: '14/10/2026', fevg: '38 %', next: '24/11/2026', alert: '', lvl: '' },
+      { name: 'Nicole Garnier', meta: '79 ans · F · CC-000072', k: ['Valvulopathie'], last: '30/07/2026', fevg: '60 %', next: '26/11/2026', alert: 'RAo serré ?', lvl: 'warn' },
+      { name: 'Denis Petit', meta: '69 ans · H · CC-000529', k: ['IC'], last: '12/11/2026', fevg: '29 %', next: '26/11/2026', alert: 'Titration en cours', lvl: 'info' }
+    ];
+    var q = (this.state.q || '').toLowerCase();
+    var f = this.state.f;
+    var rows = all.filter(function (p) {
+      return (f === 'Tous' || p.k.indexOf(f) !== -1) && (!q || (p.name + p.meta).toLowerCase().indexOf(q) !== -1);
+    }).map(function (p) {
+      var n = parseInt(p.fevg, 10);
+      var col = isNaN(n) ? '#52627F' : (n < 40 ? '#B81E2A' : (n < 50 ? '#B45309' : '#0F7A4D'));
+      var pal = { red: ['#FFFFFF', '#D42A35'], warn: ['#B45309', '#FFF4E0'], ok: ['#0F7A4D', '#E6F5EE'], info: ['#0B4FB3', '#EAF1FD'] }[p.lvl] || ['#52627F', '#EEF2F8'];
+      return Object.assign({}, p, {
+        ini: p.name.split(' ').map(function (s) { return s[0]; }).join(''),
+        tags: p.k.join(' · '), fevgColor: col, hasAlert: !!p.alert, alertFg: pal[0], alertBg: pal[1]
+      });
+    });
+    var self = this;
+    var chips = ['Tous', 'IC', 'FA', 'Coronaire', 'HTA', 'Valvulopathie', 'Aorte'].map(function (c) {
+      var on = c === f;
+      return { label: c, on: on ? 'true' : 'false', bg: on ? '#0B4FB3' : '#FFFFFF', fg: on ? '#FFFFFF' : '#0A1F44', border: on ? '#0B4FB3' : '#C9D5EA', pick: function () { self.setState({ f: c }); } };
+    });
+    return { q: this.state.q, onQ: (e) => this.setState({ q: e.target.value }), chips: chips, rows: rows, count: rows.length, empty: rows.length === 0 };
+  }
+}
+</script>
+<script>
+/* Mini-runtime CardioConsult (export HTML autonome).
+   Rend le gabarit <template id="dc-tpl"> avec la classe Component :
+   {{trous}}, <template data-for>, <template data-if>, onClick / onChange. */
+(function () {
+  function DCLogic(props) { this.props = props || {}; this.state = {}; }
+  DCLogic.prototype.setState = function (p) {
+    var patch = typeof p === 'function' ? p(this.state, this.props) : p;
+    this.state = Object.assign({}, this.state, patch);
+    if (this.__render) this.__render();
+  };
+  DCLogic.prototype.forceUpdate = function () { if (this.__render) this.__render(); };
+  DCLogic.prototype.renderVals = function () { return {}; };
+
+  var WHOLE = /^\{\{\s*([^}]+?)\s*\}\}$/;
+  var ANY = /\{\{\s*([^}]+?)\s*\}\}/g;
+
+  function lookup(path, scope) {
+    path = path.trim();
+    if (path === 'true') return true;
+    if (path === 'false') return false;
+    if (path === 'null') return null;
+    if (/^-?\d+(\.\d+)?$/.test(path)) return Number(path);
+    var parts = path.split('.'), v = scope;
+    for (var i = 0; i < parts.length; i++) {
+      if (v == null) return undefined;
+      v = v[parts[i]];
+    }
+    return v;
+  }
+  function interp(str, scope) {
+    return str.replace(ANY, function (_, p) { var v = lookup(p, scope); return v == null ? '' : String(v); });
+  }
+  function eventName(el, attr) {
+    var n = attr.slice(2).toLowerCase();
+    if (n === 'change') {
+      var t = (el.getAttribute('type') || '').toLowerCase();
+      if (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && t !== 'checkbox' && t !== 'radio')) return 'input';
+    }
+    return n;
+  }
+  function procChildren(parent, scope) {
+    var kids = Array.prototype.slice.call(parent.childNodes);
+    for (var i = 0; i < kids.length; i++) proc(kids[i], scope);
+  }
+  function proc(node, scope) {
+    if (node.nodeType === 3) {
+      if (node.nodeValue.indexOf('{{') !== -1) node.nodeValue = interp(node.nodeValue, scope);
+      return;
+    }
+    if (node.nodeType !== 1) return;
+    if (node.tagName === 'TEMPLATE' && node.hasAttribute('data-for')) {
+      var list = lookup(node.getAttribute('data-for'), scope) || [];
+      var as = node.getAttribute('data-as') || 'item';
+      var frag = document.createDocumentFragment();
+      for (var k = 0; k < list.length; k++) {
+        var c = node.content.cloneNode(true);
+        var s = Object.assign({}, scope); s[as] = list[k]; s.$index = k;
+        procChildren(c, s);
+        frag.appendChild(c);
+      }
+      node.parentNode.replaceChild(frag, node);
+      return;
+    }
+    if (node.tagName === 'TEMPLATE' && node.hasAttribute('data-if')) {
+      if (lookup(node.getAttribute('data-if'), scope)) {
+        var c2 = node.content.cloneNode(true);
+        procChildren(c2, scope);
+        node.parentNode.replaceChild(c2, node);
+      } else {
+        node.parentNode.removeChild(node);
+      }
+      return;
+    }
+    var attrs = Array.prototype.slice.call(node.attributes);
+    for (var a = 0; a < attrs.length; a++) {
+      var name = attrs[a].name, val = attrs[a].value;
+      if (name.indexOf('hint-') === 0) { node.removeAttribute(name); continue; }
+      if (name.indexOf('on') === 0) {
+        node.removeAttribute(name);
+        var m = val.match(WHOLE);
+        var fn = m ? lookup(m[1], scope) : null;
+        if (typeof fn === 'function') node.addEventListener(eventName(node, name), fn);
+        continue;
+      }
+      if (val.indexOf('{{') === -1) continue;
+      var w = val.match(WHOLE);
+      if (w) {
+        var v = lookup(w[1], scope);
+        if (typeof v === 'boolean') { if (v) node.setAttribute(name, ''); else node.removeAttribute(name); }
+        else node.setAttribute(name, v == null ? '' : String(v));
+      } else {
+        node.setAttribute(name, interp(val, scope));
+      }
+    }
+    procChildren(node, scope);
+  }
+
+  function boot() {
+    var tpl = document.getElementById('dc-tpl');
+    var app = document.getElementById('dc-app');
+    var code = document.getElementById('dc-logic').textContent;
+    var Component = new Function('DCLogic', code + '\n;return Component;')(DCLogic);
+    var inst = new Component({});
+    inst.__render = function () {
+      var act = document.activeElement, id = act && act.id, s0 = null, s1 = null;
+      try { s0 = act.selectionStart; s1 = act.selectionEnd; } catch (e) {}
+      var frag = tpl.content.cloneNode(true);
+      procChildren(frag, inst.renderVals() || {});
+      app.replaceChildren(frag);
+      if (id) {
+        var el = document.getElementById(id);
+        if (el) { el.focus(); try { if (s0 != null) el.setSelectionRange(s0, s1); } catch (e) {} }
+      }
+    };
+    inst.__render();
+    if (inst.componentDidMount) inst.componentDidMount();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+
+</script>
+</body>
+</html>

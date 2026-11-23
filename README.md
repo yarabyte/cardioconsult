@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CardioConsult
 
-## Getting Started
+Front-end Next.js (App Router) du SaaS de consultation en cardiologie — converti depuis les maquettes HTML de `templates-html/`. Données 100 % fictives ; prêt à brancher un backend via les interfaces `*Repository`.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 · TypeScript strict · Tailwind CSS v4 · shadcn/ui · lucide-react
+- Formulaires : react-hook-form + zod · Dates : date-fns (`fr`, Europe/Paris)
+- Graphiques : Recharts (composants `components/charts`)
+- Qualité : ESLint, Prettier (+ plugin Tailwind), Vitest
+
+## Démarrage local
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrir :
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| URL | Espace |
+|---|---|
+| http://localhost:3000 | Site public |
+| http://dr-martin.localhost:3000 | Cabinet (tenant) |
+| http://console.localhost:3000 | Console super admin |
+| http://localhost:3000/design | Identité visuelle |
+| http://localhost:3000/inscription | Création de tenant |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Les navigateurs modernes résolvent `*.localhost` vers `127.0.0.1`.
 
-## Learn More
+### Variables d’environnement
 
-To learn more about Next.js, take a look at the following resources:
+Copier `.env.example` → `.env.local` :
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Rôle |
+|---|---|
+| `NEXT_PUBLIC_DEMO=true` | Affiche le sélecteur de rôle de démonstration |
+| `NEXT_PUBLIC_ROOT_DOMAIN` | Domaine racine (défaut `cardioconsult.fr`) |
+| `MOCK_DELAY=0` | Désactive la latence simulée des mocks |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Scripts
 
-## Deploy on Vercel
+```bash
+pnpm dev
+pnpm build
+pnpm lint
+pnpm typecheck
+pnpm test
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+app/(marketing)/     Site public, inscription, /design
+app/(console)/       Console plateforme
+app/t/[tenant]/     Auth + application cabinet
+components/          UI, layout, clinical, charts, documents, admin
+lib/clinical/        Règles pures testées (CHA₂DS₂-VA, HAS-BLED, RCRI, aorte, BSA)
+lib/data/            Interfaces Repository + Mock*
+lib/mock/            Jeux de données repris des maquettes
+proxy.ts             Réécriture multi-tenant (hôte → routes)
+```
+
+## Brancher un vrai backend
+
+1. Implémenter les interfaces de `lib/data/repositories.ts` (API / ORM).
+2. Remplacer les exports `Mock*` par les adaptateurs réels (injection ou module swap).
+3. Passer `MOCK_ACTIVE` à `false` dans `lib/data/delay.ts` pour retirer le bandeau.
+4. Brancher l’auth réelle (session) à la place du cookie `demo-role`.
+
+## Conformité
+
+Les alertes et scores sont des aides à la décision — jamais une décision médicale. Mentions HDS telles que dans les maquettes (« hébergeur certifié HDS à contractualiser »).
