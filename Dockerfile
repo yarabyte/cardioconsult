@@ -38,12 +38,13 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup -S cc && adduser -S cc -G cc \
-  && apk add --no-cache wget
+  && apk add --no-cache curl wget
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 USER cc
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-  CMD wget -qO- http://127.0.0.1:3000/ || exit 1
+# Coolify UI healthcheck remplace celui-ci s’il est activé : path /api/health, port 3000.
+HEALTHCHECK --interval=15s --timeout=5s --start-period=60s --retries=5 \
+  CMD curl -fsS http://127.0.0.1:3000/api/health || exit 1
 CMD ["node", "server.js"]
