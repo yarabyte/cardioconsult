@@ -44,7 +44,10 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 USER cc
 EXPOSE 3000
+# Next standalone lit process.env.HOSTNAME pour le bind ; Docker le fixe à l’id
+# du conteneur → écoute hors 127.0.0.1 et casse le healthcheck. Forcer 0.0.0.0.
+ENV PORT=3000
 # Coolify UI healthcheck remplace celui-ci s’il est activé : path /api/health, port 3000.
 HEALTHCHECK --interval=15s --timeout=5s --start-period=60s --retries=5 \
   CMD curl -fsS http://127.0.0.1:3000/api/health || exit 1
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "HOSTNAME=0.0.0.0 exec node server.js"]

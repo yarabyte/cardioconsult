@@ -116,7 +116,9 @@ const SERVER_KEYS = [
 function pick(keys: readonly string[]): Record<string, string | undefined> {
   const out: Record<string, string | undefined> = {};
   for (const key of keys) {
-    out[key] = process.env[key];
+    const raw = process.env[key];
+    // Coolify / docker --env-file : clé présente avec "" → ne pas bloquer les .default() zod
+    out[key] = raw === "" ? undefined : raw;
   }
   return out;
 }
@@ -132,8 +134,8 @@ function parseEnv() {
   }
 
   const client = clientSchema.safeParse({
-    NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
-    NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
+    NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN || undefined,
+    NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV || undefined,
   });
   if (!client.success) {
     console.error(
