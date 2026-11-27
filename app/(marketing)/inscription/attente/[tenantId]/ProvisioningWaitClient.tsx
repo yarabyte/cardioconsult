@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { ROOT_DOMAIN } from "@/lib/tenant-host";
 import { cn } from "@/lib/utils";
-import { getProvisioningStatus } from "@/server/actions/inscription";
+import { getProvisioningStatus, retrySignupProvision } from "@/server/actions/inscription";
 
 const PROVISION_STEPS = [
   { id: "create_role_db", label: "Création de la base isolée" },
@@ -41,6 +41,7 @@ export function ProvisioningWaitClient({
   const [slug, setSlug] = useState<string | null>(slugHint);
   const [ready, setReady] = useState(false);
   const [resending, setResending] = useState(false);
+  const [retrying, setRetrying] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,13 +66,25 @@ export function ProvisioningWaitClient({
   }, [tenantId, slugHint]);
 
   const retry = async () => {
+    setRetrying(true);
     setError(null);
-    const s = await getProvisioningStatus(tenantId);
-    setStatus(s.status);
-    setStep(s.step);
-    setError(s.error);
-    if (s.slug) setSlug(s.slug);
-    if (s.status === "active" || s.status === "trial") setReady(true);
+    try {
+      const s = await retrySignupProvision(tenantId);
+      setStatus(s.status);
+      setStep(s.step);
+      setError(s.error);
+      if (s.slug) setSlug(s.slug);
+      if (s.status === "active" || s.status === "trial") {
+        setReady(true);
+        toast.success("Espace prêt.");
+      } else if (s.error) {
+        toast.error("La reprise a échoué. Réessayez ou contactez le support.");
+      }
+    } catch {
+      toast.error("Impossible de reprendre le provisioning.");
+    } finally {
+      setRetrying(false);
+    }
   };
 
   const resendVerification = async () => {
@@ -244,13 +257,18 @@ export function ProvisioningWaitClient({
             <div className="border-destructive/30 bg-destructive/5 mt-7 rounded-2xl border p-5 text-sm">
               <p className="font-semibold">La création a échoué.</p>
               <p className="text-muted-foreground mt-1.5 leading-relaxed">
-                Actualisez la page ; le support peut reprendre le provisioning si besoin.
+                Vous pouvez relancer la préparation. Si l’erreur persiste, contactez le support.
               </p>
               {error ? (
                 <p className="text-muted-foreground mt-3 font-mono text-xs break-all">{error}</p>
               ) : null}
-              <Button type="button" className="mt-4 rounded-full" onClick={() => void retry()}>
-                Actualiser
+              <Button
+                type="button"
+                className="mt-4 rounded-full"
+                disabled={retrying}
+                onClick={() => void retry()}
+              >
+                {retrying ? "Reprise…" : "Réessayer la préparation"}
               </Button>
             </div>
           ) : null}

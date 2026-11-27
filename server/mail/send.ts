@@ -27,6 +27,10 @@ function getTransporter(): Transporter {
     auth: env.SMTP_USER && env.SMTP_PASS ? { user: env.SMTP_USER, pass: env.SMTP_PASS } : undefined,
     // Port 587 STARTTLS ; 465 = TLS dès la connexion
     requireTLS: !secure && env.SMTP_PORT === 587,
+    // Évite de bloquer l’inscription plusieurs minutes si SMTP injoignable (Lightsail / firewall).
+    connectionTimeout: 8_000,
+    greetingTimeout: 8_000,
+    socketTimeout: 15_000,
   });
   return transporter;
 }

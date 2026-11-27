@@ -34,6 +34,19 @@ function dbNames(tenantId: string) {
   };
 }
 
+/** Hôte Postgres pour les secrets tenant = même host que DATABASE_ADMIN_URL (Coolify interne). */
+function postgresHostPortFromAdminUrl(): { host: string; port: number } {
+  try {
+    const u = new URL(env.DATABASE_ADMIN_URL);
+    return {
+      host: u.hostname || "127.0.0.1",
+      port: u.port ? Number(u.port) : 5432,
+    };
+  } catch {
+    return { host: "127.0.0.1", port: 5432 };
+  }
+}
+
 async function setStep(tenantId: string, step: string, error?: string) {
   const control = getControlDb();
   await control
@@ -152,18 +165,21 @@ export async function provisionTenant(payload: TenantProvisionPayload): Promise<
       .set({ dbName, dbRole: roleName, updatedAt: new Date() })
       .where(eq(tenants.id, tenantId));
 
+    const { host: dbHost, port: dbPort } = postgresHostPortFromAdminUrl();
     await control
       .insert(tenantDbSecrets)
       .values({
         tenantId,
         passwordEnc: encryptDbPassword(env.APP_SECRET, password),
-        host: "127.0.0.1",
-        port: 5432,
+        host: dbHost,
+        port: dbPort,
       })
       .onConflictDoUpdate({
         target: tenantDbSecrets.tenantId,
         set: {
           passwordEnc: encryptDbPassword(env.APP_SECRET, password),
+          host: dbHost,
+          port: dbPort,
           updatedAt: new Date(),
         },
       });

@@ -265,3 +265,79 @@ export async function getProvisioningStatus(tenantId: string): Promise<{
     slug: t.slug,
   };
 }
+
+/**
+ * Reprise synchrone du provisioning après échec (démo / sans worker).
+ * Réservé aux tenants `provisioning_failed`.
+ */
+export async function retrySignupProvision(tenantId: string): Promise<{
+  ok: boolean;
+  status: string;
+  step: string | null;
+  error: string | null;
+  slug: string | null;
+}> {
+  const control = getControlDb();
+  const [t] = await control.select().from(tenants).where(eq(tenants.id, tenantId)).limit(1);
+  if (!t) {
+    return { ok: false, status: "unknown", step: null, error: "Tenant introuvable", slug: null };
+  }
+  if (t.status === "active" || t.status === "trial") {
+    return {
+      ok: true,
+      status: t.status,
+      step: t.provisionStep,
+      error: null,
+      slug: t.slug,
+    };
+  }
+  if (t.status !== "provisioning_failed" && t.status !== "provisioning") {
+    return {
+      ok: false,
+      status: t.status,
+      step: t.provisionStep,
+      error: "Reprise impossible pour ce statut.",
+      slug: t.slug,
+    };
+  }
+
+  const [member] = await control
+    .select()
+    .from(members)
+    .where(eq(members.tenantId, tenantId))
+    .limit(1);
+  const [user] = member
+    ? await control.select().from(users).where(eq(users.id, member.userId)).limit(1)
+    : [undefined];
+
+  await control
+    .update(tenants)
+    .set({
+      status: "provisioning",
+      provisionStep: "retry",
+      provisionError: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(tenants.id, tenantId));
+
+  try {
+    await provisionTenant({
+      tenantId,
+      adminUser: user ? { email: user.email, name: user.name, userId: user.id } : undefined,
+    });
+  } catch (err) {
+    logger.error(
+      {
+        event: "signup.provision_retry_failed",
+        tenantId,
+        err: err instanceof Error ? err.message : "x",
+      },
+      "Reprise provisioning échouée",
+    );
+  }
+
+  return getProvisioningStatus(tenantId).then((s) => ({
+    ok: s.status === "active" || s.status === "trial",
+    ...s,
+  }));
+}

@@ -14,10 +14,8 @@ let singleton: KeyManager | null = null;
 
 export function getKeyManager(): KeyManager {
   if (singleton) return singleton;
-  if (env.NEXT_PUBLIC_APP_ENV === "production") {
-    singleton = new KmsKeyManager();
-  } else {
-    singleton = new LocalDevKeyManager(env.APP_SECRET);
-  }
+  const mode =
+    env.CRYPTO_KEY_MANAGER ?? (env.NEXT_PUBLIC_APP_ENV === "production" ? "kms" : "local-dev");
+  singleton = mode === "kms" ? new KmsKeyManager() : new LocalDevKeyManager(env.APP_SECRET);
   return singleton;
 }

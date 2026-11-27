@@ -2,6 +2,15 @@
 
 Journal ADR court. Les décisions Phase 1–6 (socle démo) sont conservées en bas ; les ADR P00 cadrent la cible production.
 
+## ADR — Crypto / démo Lightsail
+
+### ADR-061 — `CRYPTO_KEY_MANAGER=local-dev` hors HDS
+
+- **Statut** : retenu (démo / préprod uniquement)
+- **Contexte** : `NEXT_PUBLIC_APP_ENV=production` sur Coolify Lightsail forçait `KmsKeyManager`, non branché → provisioning_failed à l’inscription.
+- **Décision** : variable `CRYPTO_KEY_MANAGER` (`local-dev` | `kms`). Défaut implicite : `kms` si `APP_ENV=production`, sinon `local-dev`. Démo Lightsail : `local-dev` explicite (KEK dérivée de `APP_SECRET`).
+- **Non-conformité assumée** : pas un KMS/Vault HDS. Production clinique → `kms` + intégration réelle ; ne pas affirmer HDS.
+
 ## ADR — Stockage objet local / démo
 
 ### ADR-060 — Remplacer les images MinIO officielles par Silo (pgsty)

@@ -49,6 +49,12 @@ const serverSchema = z.object({
   /** Secret applicatif local — remplacer en production (jamais committer la vraie valeur). */
   APP_SECRET: z.string().min(32).default("dev-only-change-me-32chars-minimum!!"),
 
+  /**
+   * Gestionnaire de KEK : `local-dev` (APP_SECRET / démo Lightsail) ou `kms` (HDS).
+   * En production HDS : obligatoirement `kms`. Démo hors HDS : `local-dev` explicite.
+   */
+  CRYPTO_KEY_MANAGER: z.enum(["local-dev", "kms"]).optional(),
+
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
   BETTER_AUTH_URL: z.string().url().default("http://localhost:3000"),
   PSC_ENABLED: boolish.default(false),
@@ -98,6 +104,7 @@ const SERVER_KEYS = [
   "SMTP_PASS",
   "SMTP_SECURE",
   "APP_SECRET",
+  "CRYPTO_KEY_MANAGER",
   "LOG_LEVEL",
   "BETTER_AUTH_URL",
   "PSC_ENABLED",
