@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.github
+*.md
+!LISEZMOI.md
+.env*
+!.env.example
+coverage
+playwright-report
+test-results
+docs/exploitation/rapports
+templates-html
+agent-transcripts

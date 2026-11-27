@@ -7,8 +7,16 @@ const SOURCE = { id: "bsa-mosteller", version: "1.0" } as const;
  * Body surface area — Mosteller: √((heightCm × weightKg) / 3600)
  * Rejects missing or impossible values.
  */
-export function computeBsa(heightM: number | null | undefined, weightKg: number | null | undefined): ScoreResult {
-  if (heightM == null || weightKg == null || !Number.isFinite(heightM) || !Number.isFinite(weightKg)) {
+export function computeBsa(
+  heightM: number | null | undefined,
+  weightKg: number | null | undefined,
+): ScoreResult {
+  if (
+    heightM == null ||
+    weightKg == null ||
+    !Number.isFinite(heightM) ||
+    !Number.isFinite(weightKg)
+  ) {
     return {
       status: "incomplet",
       value: null,
@@ -21,12 +29,13 @@ export function computeBsa(heightM: number | null | undefined, weightKg: number 
     };
   }
   if (heightM <= 0 || heightM > 2.5 || weightKg <= 0 || weightKg > 400) {
-    return nonApplicable(
-      ["Valeurs anthropométriques impossibles — BSA non calculée."],
-      SOURCE,
-    );
+    return nonApplicable(["Valeurs anthropométriques impossibles — BSA non calculée."], SOURCE);
   }
   const heightCm = heightM * 100;
   const bsa = Math.sqrt((heightCm * weightKg) / 3600);
-  return calculated(Number(bsa.toFixed(2)), [`Mosteller : √((${heightCm} × ${weightKg}) / 3600)`], SOURCE);
+  return calculated(
+    Number(bsa.toFixed(2)),
+    [`Mosteller : √((${heightCm} × ${weightKg}) / 3600)`],
+    SOURCE,
+  );
 }

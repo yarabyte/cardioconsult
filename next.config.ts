@@ -1,9 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // Image Docker (P19) — sortie autonome pour runner non-root.
+  output: "standalone",
+  // Multi-tenant + RBAC headers (proxy) : Cache Components /
+  // Partial Prefetching déclenchent des erreurs « instant » dès qu’un layout
+  // appelle notFound()/cookies()/params hors Suspense. Désactivés volontairement.
+  poweredByHeader: false,
   turbopack: {
     rules: {
       "*.css": {

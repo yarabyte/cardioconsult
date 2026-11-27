@@ -1,0 +1,44 @@
+---
+description: Architecture en couches, conventions de code, Server Actions, accès aux données
+globs: app/**,components/**,lib/**,server/**,db/**
+alwaysApply: false
+---
+
+# Architecture et conventions
+
+## Couches (dépendances dans un seul sens : UI → actions → services → repositories → db)
+```text
+app/                     routes App Router (UI seulement, aucun SQL, aucune règle métier)
+components/ui            shadcn (non modifié)
+components/<domaine>     composants métier présentationnels
+server/actions/<domaine> Server Actions : parse zod → requireContext() → service → revalidate
+server/services/<domaine> logique applicative, transactions, audit
+server/repositories      accès Drizzle, toujours reçoit un TenantDb (jamais un client global)
+server/auth              session, contexte, RBAC
+lib/clinical             règles cliniques PURES (sans I/O), testées
+lib/validation           schémas zod partagés client/serveur
+db/control               schéma + migrations control-plane
+db/tenant                schéma + migrations tenant
+```
+
+## Contexte de requête
+- Toute Server Action, route handler ou page protégée commence par :
+  `const ctx = await requireContext({ permission: 'patient.read' })`.
+- `ctx` contient `{ user, member, role, tenant, db: TenantDb, requestId }`.
+- Il est **interdit** d'importer directement un client de base tenant ailleurs que dans `server/db/tenant-db.ts`.
+- `TenantDb` ne peut être obtenu qu'à partir d'un tenant résolu côté serveur depuis l'hôte, jamais depuis un paramètre envoyé par le client.
+
+## Server Actions
+- Entrée : `FormData` ou objet validé avec `schema.safeParse`. Rejeter les champs inconnus (`.strict()`).
+- Sortie : `{ ok: true, data } | { ok: false, error: { code, message } }`. Messages en français, sans détail technique ni donnée sensible.
+- Mutations dans `db.transaction()` avec l'événement d'audit **dans la même transaction**.
+- Verrou optimiste (`version` entière) sur les entités éditées à plusieurs : patients, consultations, documents.
+
+## Conventions
+- Noms de domaine en français dans l'UI. Noms de code en anglais (`patient`, `encounter`, `echoStudy`), alignés sur `types/domain.ts`.
+- Dates stockées en `timestamptz` UTC, affichées en `Europe/Paris` via `lib/format.ts`. Dates cliniques sans heure en type `date`. Jamais `toISOString().split('T')[0]`.
+- Unités explicites dans les noms de colonnes (`lvef_pct`, `aorta_ascending_mm`, `creatinine_umol_l`).
+- Valeurs cliniques absentes : `null`. Booléens cliniques à trois états : enum `yes | no | unknown`.
+- Pas de `any`, pas de `@ts-ignore`. `eslint-plugin-security` et `no-console` (sauf le logger) actifs.
+- Composants client minimaux. Données chargées dans les Server Components, jamais via `fetch` client vers une API interne si un Server Component suffit.
+- Chaque route a son `loading.tsx` et son `error.tsx`, et `not-found.tsx` quand c'est pertinent.

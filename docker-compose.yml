@@ -1,0 +1,70 @@
+# Environnement de développement local — données synthétiques uniquement (aucune donnée réelle).
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cc-postgres
+    environment:
+      POSTGRES_USER: cardioconsult
+      POSTGRES_PASSWORD: cardioconsult
+      POSTGRES_DB: cc_control
+    ports:
+      - "5432:5432"
+    volumes:
+      - cc_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cardioconsult -d cc_control"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: cc-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio-secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - cc_minio_data:/data
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: cc-minio-init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 3;
+      mc alias set local http://minio:9000 minio minio-secret;
+      mc mb -p local/cardioconsult-dev || true;
+      exit 0;
+      "
+
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    container_name: cc-gotenberg
+    ports:
+      - "3001:3000"
+
+  clamav:
+    image: clamav/clamav:1.4
+    container_name: cc-clamav
+    ports:
+      - "3310:3310"
+    volumes:
+      - cc_clamav_data:/var/lib/clamav
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: cc-mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  cc_pg_data:
+  cc_minio_data:
+  cc_clamav_data:

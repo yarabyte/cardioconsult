@@ -1,0 +1,30 @@
+---
+description: Tests, qualité, CI/CD et définition du « terminé »
+globs: tests/**,e2e/**,**/*.test.ts,**/*.spec.ts,.github/**,vitest.config.*,playwright.config.*
+alwaysApply: false
+---
+
+# Tests, qualité et CI
+
+## Pyramide
+- **Unitaires** (Vitest) : `lib/clinical` (≥ 95 %), `lib/rbac` (table de vérité complète), validations zod, formatage FR.
+- **Intégration** (Vitest + PostgreSQL éphémère via Testcontainers) : services avec une vraie base tenant, transactions et audit, verrou optimiste, **isolation entre deux tenants** (le tenant A ne lit jamais B, même avec un ID valide de B).
+- **E2E** (Playwright) : parcours inscription → provisioning → connexion MFA → patient → consultation → compte rendu validé → ordonnance ; parcours infirmière ; refus d'accès par rôle ; super admin sans accès clinique.
+- **Accessibilité** : `@axe-core/playwright` sur chaque route, zéro violation sérieuse ou critique.
+- **Sécurité** : tests des en-têtes (CSP, HSTS, cookies `__Host-`), limitation de débit, IDOR (ID d'un autre tenant), téléversement malveillant (EICAR, faux MIME).
+
+## CI (GitHub Actions ou équivalent) : toutes les étapes sont bloquantes
+1. `pnpm install --frozen-lockfile`
+2. `pnpm lint` (ESLint + eslint-plugin-security), `pnpm typecheck`, `pnpm format:check`
+3. `pnpm test` (unitaires + intégration) avec seuils de couverture
+4. `pnpm build`
+5. E2E Playwright sur une préproduction éphémère (données synthétiques)
+6. gitleaks, Semgrep, `pnpm audit --audit-level=high`, scan d'image conteneur (Trivy)
+7. SBOM (CycloneDX) archivé avec chaque release
+
+## Définition du « terminé »
+- Critères d'acceptation du prompt remplis et démontrés par des tests.
+- Migrations additives testées sur un tenant existant.
+- Audit présent pour chaque nouvelle mutation ou lecture de dossier.
+- Aucune régression d'accessibilité. Libellés en français.
+- `DECISIONS.md` et `CHANGELOG.md` mis à jour, rapport de fin de tâche fourni.

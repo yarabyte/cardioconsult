@@ -1,4 +1,4 @@
-# Prompt Cursor — Conversion du template CardioConsult en projet Next.js + Tailwind + shadcn/ui
+# Prompt Cursor — Conversion du template Cardio Soin en projet Next.js + Tailwind + shadcn/ui
 
 > À coller dans Cursor (mode Agent) à la racine d'un dépôt vide, après avoir copié le dossier `templates-html/` (ce ZIP) à la racine du dépôt.
 
@@ -8,7 +8,7 @@
 
 Tu es un développeur front-end senior Next.js / TypeScript / Tailwind / shadcn/ui.
 
-Convertis la maquette HTML de **CardioConsult** (SaaS de consultation en cardiologie, commercialisé en France) en une **application Next.js prête à recevoir un backend**. Le dossier `templates-html/` contient 19 écrans HTML autonomes qui font foi pour le **contenu, la mise en page, les couleurs et les interactions**. Ouvre-les dans un navigateur et lis leur source avant de coder chaque écran.
+Convertis la maquette HTML de **Cardio Soin** (SaaS de consultation en cardiologie, commercialisé en France) en une **application Next.js prête à recevoir un backend**. Le dossier `templates-html/` contient 19 écrans HTML autonomes qui font foi pour le **contenu, la mise en page, les couleurs et les interactions**. Ouvre-les dans un navigateur et lis leur source avant de coder chaque écran.
 
 Le résultat attendu est un front-end **fidèle aux maquettes**, découpé en composants réutilisables, typé, accessible, responsive, avec des **données fictives** derrière une couche d'accès remplaçable. Aucun backend réel n'est demandé à cette étape.
 
@@ -27,12 +27,12 @@ N'ajoute aucune autre dépendance sans le justifier dans `DECISIONS.md`.
 
 ## 3. Correspondance des écrans et des routes
 
-Multi-tenant par **sous-domaine** : chaque cabinet a son espace `<tenant>.cardioconsult.fr`, et la console plateforme est sur `console.cardioconsult.fr`.
+Multi-tenant par **sous-domaine** : chaque cabinet a son espace `<tenant>.cardiosoins.com`, et la console plateforme est sur `console.cardiosoins.com`.
 
 | Fichier HTML | Route Next.js | Hôte |
 |---|---|---|
 | `00-identite-visuelle.html` | `/design` (page interne de référence, non indexée) | racine |
-| `01-site-public-cardioconsult-fr.html` | `/` | `cardioconsult.fr` |
+| `01-site-public-cardioconsult-fr.html` | `/` | `cardiosoins.com` |
 | `02-inscription-creation-du-tenant.html` | `/inscription` (assistant en 4 étapes, étape 3 = sous-domaine) | racine |
 | `03-connexion-a-l-espace-cabinet.html` | `/connexion` (+ étape MFA) | tenant |
 | `04-tableau-de-bord-medecin.html` | `/tableau-de-bord` | tenant |
@@ -157,7 +157,7 @@ Chaque graphique a un `aria-label`, une légende textuelle et des couleurs qui s
 
 ## 10. Interactions à reproduire
 
-- 02 : validation en direct du sous-domaine (disponible / trop court / réservé / déjà pris), aperçu de l'URL, bouton « Créer <slug>.cardioconsult.fr ». Formulaire zod.
+- 02 : validation en direct du sous-domaine (disponible / trop court / réservé / déjà pris), aperçu de l'URL, bouton « Créer <slug>.cardiosoins.com ». Formulaire zod.
 - 03 : connexion → étape MFA (code à 6 chiffres) → tableau de bord. Bouton « Pro Santé Connect » présent mais marqué « à venir ».
 - 06 : recherche et puces de pathologie filtrent le tableau. État vide géré.
 - 07 : onglets du dossier, sélecteur de période (6 mois / 1 an / tout) qui filtre réellement les séries.

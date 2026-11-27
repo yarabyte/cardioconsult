@@ -1,0 +1,26 @@
+---
+description: Comptes rendus, ordonnances, versionnage, PDF, journal d'audit
+globs: server/services/documents/**,server/services/prescriptions/**,server/services/audit/**,components/documents/**
+alwaysApply: false
+---
+
+# Documents, ordonnances et audit
+
+## Documents (comptes rendus, courriers)
+- États : `brouillon` → `valide` → `signe`, plus `annule` et `remplace`. Les transitions sont contrôlées par le service et auditées.
+- Le contenu est en JSON structuré (Tiptap/ProseMirror). Séparer les **données sources** (snapshot de la consultation), le **brouillon généré** et l'**édition du médecin**. Une régénération crée une nouvelle `document_version` et n'écrase jamais l'édition, avec avertissement et vue des différences.
+- Un document `valide` ou `signe` est **immuable**. Toute correction crée une version N+1 avec l'auteur, la date et le motif.
+- La signature électronique e-CPS est une interface `SignatureProvider`. Implémentation `NotAvailable` (état `valide` seulement) tant qu'aucune intégration réelle n'existe.
+- Le PDF est généré côté serveur par Gotenberg, à partir d'un gabarit A4 maîtrisé. Il porte l'identité du patient et de l'auteur, la date, l'identifiant, la version et le statut. Les fichiers sont stockés chiffrés et servis par URL présignée courte. Aucune copie temporaire ne persiste.
+- Pas d'envoi automatique. L'envoi MSSanté est une intégration future derrière un flag.
+
+## Ordonnances
+- Lignes vides par défaut : **aucune molécule ni dose préremplie** par un modèle. Les modèles n'insèrent que des DCI.
+- Vérifications avant validation : allergies, DFG et kaliémie récents (avec leur date), grossesse renseignée. Elles sont affichées comme rappels et ne bloquent ni ne décident. Les interactions affichent « base médicamenteuse non connectée — vérification clinique nécessaire » tant qu'une base certifiée n'est pas intégrée.
+- Mise en page bizone (ALD) disponible. Validation réservée à `prescription.validate`. Ordonnance immuable après validation.
+
+## Journal d'audit (`audit_event`, base tenant)
+- Événements obligatoires : connexion (succès et échec), sortie de MFA, ouverture d'un dossier patient, création, modification, archivage, export, impression, téléchargement, génération de PDF, changement de statut de document, reconnaissance d'alerte, changement de rôle ou de permission, accès support, accès refusé.
+- Champs : `id`, `at`, `actorId`, `actorRole`, `action`, `entityType`, `entityId`, `outcome`, `ip` tronquée, `userAgentHash`, `requestId`, `prevHash`, `hash`. **Aucun contenu clinique** ni nom de patient.
+- Écrit dans la même transaction que la mutation. Les lectures (ouverture de dossier) sont journalisées de façon asynchrone mais garantie (outbox).
+- Consultation réservée à `audit.read`. Export signé et horodaté. Rétention alignée sur celle des dossiers.

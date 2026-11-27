@@ -16,10 +16,21 @@ export function DonutChart({
 }) {
   const total = data.reduce((s, d) => s + d.value, 0);
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center" role="img" aria-label={ariaLabel}>
+    <div
+      className="flex flex-col gap-3 sm:flex-row sm:items-center"
+      role="img"
+      aria-label={ariaLabel}
+    >
       <ResponsiveContainer width="100%" height={height} className="max-w-[220px]">
         <PieChart>
-          <Pie data={data} dataKey="value" nameKey="label" innerRadius={55} outerRadius={80} paddingAngle={2}>
+          <Pie
+            data={data}
+            dataKey="value"
+            nameKey="label"
+            innerRadius={55}
+            outerRadius={80}
+            paddingAngle={2}
+          >
             {data.map((_, i) => (
               <Cell key={i} fill={COLORS[i % COLORS.length]} />
             ))}
@@ -36,7 +47,7 @@ export function DonutChart({
               aria-hidden
             />
             <span className="font-medium">{d.label}</span>
-            <span className="text-muted-foreground tabular-nums ml-auto">
+            <span className="text-muted-foreground ml-auto tabular-nums">
               {total ? Math.round((d.value / total) * 100) : 0} %
             </span>
           </li>

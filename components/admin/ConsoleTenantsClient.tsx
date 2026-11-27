@@ -2,15 +2,26 @@
 
 import { useMemo, useState } from "react";
 import type { Tenant } from "@/types/domain";
+import { ROOT_DOMAIN } from "@/lib/tenant-host";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const STATUS_VARIANT: Record<Tenant["status"], string> = {
+  provisioning: "bg-muted text-muted-foreground",
+  provisioning_failed: "bg-destructive/10 text-destructive",
   Actif: "bg-success-soft text-success",
   Essai: "bg-primary-soft text-primary",
   Suspendu: "bg-muted text-muted-foreground",
   "Paiement en échec": "bg-destructive/10 text-destructive",
+  deleted: "bg-muted text-muted-foreground",
 };
 
 export function ConsoleTenantsClient({ tenants }: { tenants: Tenant[] }) {
@@ -19,7 +30,8 @@ export function ConsoleTenantsClient({ tenants }: { tenants: Tenant[] }) {
     const s = q.trim().toLowerCase();
     if (!s) return tenants;
     return tenants.filter(
-      (t) => t.slug.includes(s) || t.name.toLowerCase().includes(s) || t.city?.toLowerCase().includes(s),
+      (t) =>
+        t.slug.includes(s) || t.name.toLowerCase().includes(s) || t.city?.toLowerCase().includes(s),
     );
   }, [tenants, q]);
 
@@ -58,7 +70,7 @@ function TenantsTableBody({ tenants }: { tenants: Tenant[] }) {
           {tenants.map((t) => (
             <TableRow key={t.id}>
               <TableCell>
-                <strong>{t.slug}</strong>.cardioconsult.fr
+                <strong>{t.slug}</strong>.{ROOT_DOMAIN}
                 <p className="text-muted-foreground text-xs">{t.name}</p>
               </TableCell>
               <TableCell>{t.plan}</TableCell>

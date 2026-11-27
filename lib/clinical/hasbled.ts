@@ -19,7 +19,7 @@ export type HasbledInput = {
   criteria: HasbledCriteria;
 };
 
-const LABELS: Record<keyof HasbledCriteria, string> = {
+export const HASBLED_LABELS: Record<keyof HasbledCriteria, string> = {
   hta: "Hypertension non contrôlée",
   renal: "Atteinte rénale",
   liver: "Atteinte hépatique",
@@ -28,6 +28,8 @@ const LABELS: Record<keyof HasbledCriteria, string> = {
   labileInr: "INR labile",
   drugsOrAlcohol: "Médicaments / alcool",
 };
+
+const LABELS = HASBLED_LABELS;
 
 export function computeHasbled(input: HasbledInput): ScoreResult {
   const age = ageAt(input.birthDate, input.actDate);

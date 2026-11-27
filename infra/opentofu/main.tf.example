@@ -1,0 +1,23 @@
+# Exemple OpenTofu — NE PAS appliquer tel quel.
+# Remplacer le provider par celui de l'hébergeur HDS retenu.
+
+terraform {
+  required_version = ">= 1.6.0"
+}
+
+# resource "hds_vpc" "private" { ... }
+# resource "hds_postgres" "control" {
+#   encryption = true
+#   pitr       = true
+#   network    = hds_vpc.private.id
+# }
+# resource "hds_s3_bucket" "files" { encryption = true }
+# resource "hds_kms_key" "kek" { ... }
+# resource "hds_container" "app" { image = "…@sha256:…" }
+# resource "hds_container" "gotenberg" { egress = "deny" }
+# resource "hds_container" "clamav" { egress = "deny" }
+# resource "hds_bastion" "ops" { mfa = true }
+
+output "note" {
+  value = "Compléter après choix hébergeur HDS — voir infra/README.md"
+}

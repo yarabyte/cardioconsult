@@ -1,41 +1,52 @@
-import { DemoBanner } from "./DemoBanner";
+import { SupportBanner } from "./SupportBanner";
 import { AppSidebar } from "./AppSidebar";
 import { Topbar } from "./Topbar";
-import { DemoRoleSwitcher } from "./DemoRoleSwitcher";
 import type { Role } from "@/types/domain";
+import type { SidebarOpenDossier } from "@/server/services/patients/open-dossiers";
 
 export function AppShell({
   role,
+  isTenantAdmin,
   userName,
   tenantName,
+  tenantId,
   primaryAction,
-  patients,
+  openDossiers = [],
   children,
 }: {
   role: Role;
+  isTenantAdmin?: boolean;
   userName: string;
   tenantName?: string;
+  tenantId?: string;
   primaryAction?: { label: string; href: string };
-  patients?: { id: string; label: string }[];
+  openDossiers?: SidebarOpenDossier[];
   children: React.ReactNode;
 }) {
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <DemoBanner />
+      {tenantId ? <SupportBanner tenantId={tenantId} isTenantAdmin={isTenantAdmin} /> : null}
       <div className="flex min-h-0 flex-1">
-        <AppSidebar role={role} tenantName={tenantName} />
-        <div className="flex min-w-0 flex-1 flex-col">
+        <AppSidebar
+          role={role}
+          isTenantAdmin={isTenantAdmin}
+          tenantName={tenantName}
+          openDossiers={openDossiers}
+        />
+        <div className="flex min-h-0 flex-1 flex-col">
           <Topbar
             role={role}
+            isTenantAdmin={isTenantAdmin}
             userName={userName}
             tenantName={tenantName}
             primaryAction={primaryAction}
-            patients={patients}
+            openDossiers={openDossiers}
           />
-          <main className="flex-1 p-4 md:p-6">{children}</main>
+          <main id="contenu-principal" className="app-atmosphere flex-1 p-4 md:p-6 lg:p-8">
+            <div className="mx-auto w-full max-w-[1400px]">{children}</div>
+          </main>
         </div>
       </div>
-      <DemoRoleSwitcher current={role} />
     </div>
   );
 }

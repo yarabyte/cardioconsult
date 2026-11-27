@@ -11,7 +11,7 @@ export type RcriCriteria = {
   creatinineAbove177: TriState;
 };
 
-const LABELS: Record<keyof RcriCriteria, string> = {
+export const RCRI_LABELS: Record<keyof RcriCriteria, string> = {
   highRiskSurgery: "Chirurgie à haut risque",
   ischemicHeartDisease: "Cardiopathie ischémique",
   heartFailure: "Insuffisance cardiaque",
@@ -19,6 +19,8 @@ const LABELS: Record<keyof RcriCriteria, string> = {
   insulinDependentDiabetes: "Diabète sous insuline",
   creatinineAbove177: "Créatinine > 177 µmol/L",
 };
+
+const LABELS = RCRI_LABELS;
 
 export function computeRcri(criteria: RcriCriteria): ScoreResult {
   let known = 0;

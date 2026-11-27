@@ -33,4 +33,41 @@ describe("evaluateAorticSegment", () => {
     });
     expect(result.score.status).toBe("incomplet");
   });
+
+  it("does not treat notVisualized / 0 as a real diameter", () => {
+    const result = evaluateAorticSegment({
+      segment: "ascendante",
+      diameterMm: 0,
+      notVisualized: true,
+      datedAt: "2026-11-23",
+    });
+    expect(result.diameterMm).toBeNull();
+    expect(result.score.status).toBe("incomplet");
+    expect(result.level).toBe("non_renseigne");
+  });
+
+  it("T-11 — descendante 60 mm n'alerte pas l'ascendante 38 mm", () => {
+    const asc = evaluateAorticSegment({
+      segment: "ascendante",
+      diameterMm: 38,
+      datedAt: "2026-11-23",
+    });
+    const desc = evaluateAorticSegment({
+      segment: "descendante",
+      diameterMm: 60,
+      datedAt: "2026-11-23",
+    });
+    expect(asc.level).toBe("sous_seuil");
+    expect(desc.level).toBe("potentiellement_urgent");
+  });
+
+  it("T-12 — aucune mesure → non_renseigne (pas « normal »)", () => {
+    const r = evaluateAorticSegment({
+      segment: "sinus",
+      diameterMm: null,
+      datedAt: "2026-11-23",
+    });
+    expect(r.level).toBe("non_renseigne");
+    expect(r.score.status).toBe("incomplet");
+  });
 });

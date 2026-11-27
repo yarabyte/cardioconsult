@@ -1,0 +1,21 @@
+---
+description: UI fidèle aux templates, tokens, shadcn, accessibilité, français
+globs: app/**/*.tsx,components/**/*.tsx,app/globals.css
+alwaysApply: false
+---
+
+# UI et accessibilité
+
+- Les maquettes `templates-html/` font foi (mise en page, libellés, états). En cas d'écart volontaire, l'écrire dans `DECISIONS.md`.
+- Tokens : bleu `#0B4FB3` (actions), bleu nuit `#0A1F44` (texte), gris `#52627F` (secondaire), fond `#F4F7FC`, bordures `#DCE4F2`. Le rouge `#D42A35` est réservé aux **alertes**, le rouge de marque `#E0313B` au logo et au marketing. Orange `#B45309` / `#FFF4E0` pour l'incomplet, vert `#0F7A4D` / `#E6F5EE` pour le validé.
+- Un seul composant `StatusBadge` (non renseigné, calculé, incomplet, validé, alerte, RED FLAG). Une alerte a toujours un **texte explicatif**, jamais une couleur seule.
+- shadcn/ui pour les primitives. Ne pas modifier `components/ui`, étendre par composition ou variantes `cva`.
+- Accessibilité WCAG 2.1 AA :
+  - vrais `button`, `a` et `label` ;
+  - `aria-current` pour la navigation, `aria-pressed` pour les bascules, `aria-live` pour les résultats recalculés ;
+  - focus visible, navigation clavier complète ;
+  - cibles d'au moins 44 px, contraste ≥ 4,5:1.
+- Graphiques : `aria-label`, légende textuelle, unités, couleurs distinctes aussi par la luminosité, tableau de données accessible en alternative.
+- Français : dates `23 novembre 2026`, nombres `1 284`, décimales à virgule, unités avec espace insécable (`128 mmHg`).
+- Responsive : sidebar en `Sheet` sous 1024 px, tableaux avec défilement horizontal, aucun débordement à 375 px.
+- Formulaires cliniques : unité visible dans chaque champ, plages indicatives, distinction « non renseigné » / « normal », enregistrement de brouillon **côté serveur** (jamais dans le navigateur), indicateur « enregistré à HH:MM ».

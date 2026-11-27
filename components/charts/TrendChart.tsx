@@ -61,21 +61,33 @@ export function TrendChart({
       <ResponsiveContainer width="100%" height={height}>
         <ComposedChart data={data} margin={{ top: 12, right: 16, left: 0, bottom: 0 }}>
           <CartesianGrid stroke="#E3E9F4" strokeDasharray="3 3" />
-          <XAxis dataKey={xKey} tick={{ fill: "#52627F", fontSize: 11 }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fill: "#52627F", fontSize: 11 }} axisLine={false} tickLine={false} width={40} />
+          <XAxis
+            dataKey={xKey}
+            tick={{ fill: "#52627F", fontSize: 11 }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            tick={{ fill: "#52627F", fontSize: 11 }}
+            axisLine={false}
+            tickLine={false}
+            width={40}
+          />
           <Tooltip
             contentStyle={{
               borderRadius: 10,
               border: "1px solid #DCE4F2",
               fontSize: 12,
             }}
-            formatter={(value) => {
+            formatter={(value, name, item) => {
               if (value == null || typeof value === "boolean") return ["—", ""];
               const n = typeof value === "number" ? value : Number(value);
               const formatted = Number.isInteger(n) ? formatNumber(n) : formatDecimal(n, 2);
-              return [`${formatted}${unit ? ` ${unit}` : ""}`, ""];
+              const payload = item?.payload as Record<string, unknown> | undefined;
+              const source = typeof payload?.source === "string" ? ` · ${payload.source}` : "";
+              return [`${formatted}${unit ? ` ${unit}` : ""}${source}`, String(name ?? "")];
             }}
-            labelFormatter={(label) => String(label)}
+            labelFormatter={(label) => `Date : ${String(label)}`}
           />
           {zones.map((z, i) => (
             <ReferenceArea key={i} y1={z.y1} y2={z.y2} fill={z.color} fillOpacity={1} />
@@ -138,7 +150,10 @@ export function TrendChart({
               {v != null ? (
                 <span className="tabular-nums">
                   {" "}
-                  · dernière : {typeof v === "number" ? formatDecimal(v, Number.isInteger(v) ? 0 : 1) : String(v)}
+                  · dernière :{" "}
+                  {typeof v === "number"
+                    ? formatDecimal(v, Number.isInteger(v) ? 0 : 1)
+                    : String(v)}
                   {unit ? ` ${unit}` : ""}
                 </span>
               ) : null}

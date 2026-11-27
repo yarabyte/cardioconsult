@@ -1,10 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  computeCha2ds2va,
-  type Cha2ds2vaCriteria,
-} from "@/lib/clinical/cha2ds2va";
+import { computeCha2ds2va, type Cha2ds2vaCriteria } from "@/lib/clinical/cha2ds2va";
 import { formatNumber } from "@/lib/format";
 import { StatusBadge } from "@/components/clinical/StatusBadge";
 import { TriStateCriterion } from "./TriStateCriterion";

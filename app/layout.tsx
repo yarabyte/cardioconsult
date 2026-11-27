@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -12,15 +13,16 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "CardioConsult",
-    template: "%s · CardioConsult",
+    default: APP_NAME,
+    template: `%s · ${APP_NAME}`,
   },
-  description:
-    "SaaS de consultation en cardiologie — comptes rendus, scores, surveillance.",
+  description: `${APP_TAGLINE} — comptes rendus, scores, surveillance.`,
   robots: { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  // Le nonce CSP est posé par proxy.ts (en-tête x-nonce) ; ne pas l'exposer en attribut DOM
+  // (réutilisation possible en cas de XSS partielle).
   return (
     <html lang="fr" className={`${plusJakarta.variable} h-full`}>
       <body className="flex min-h-full flex-col font-sans antialiased">

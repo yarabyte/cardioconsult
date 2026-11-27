@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { APP_NAME } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
 type LogoVariant = "clair" | "sombre" | "icone" | "mono" | "vertical";
@@ -11,12 +12,21 @@ const SRC: Record<LogoVariant, string> = {
   vertical: "/brand/logo-vertical.svg",
 };
 
-const DEFAULT_SIZE: Record<LogoVariant, { width: number; height: number }> = {
-  clair: { width: 200, height: 40 },
-  sombre: { width: 200, height: 40 },
-  icone: { width: 40, height: 40 },
-  mono: { width: 180, height: 36 },
-  vertical: { width: 120, height: 120 },
+/** Intrinsic aspect ratios from SVG viewBoxes. */
+const ASPECT: Record<LogoVariant, number> = {
+  clair: 232 / 64,
+  sombre: 232 / 64,
+  icone: 1,
+  mono: 232 / 64,
+  vertical: 180 / 188,
+};
+
+const DEFAULT_HEIGHT: Record<LogoVariant, number> = {
+  clair: 32,
+  sombre: 32,
+  icone: 40,
+  mono: 28,
+  vertical: 120,
 };
 
 export function Logo({
@@ -32,15 +42,19 @@ export function Logo({
   height?: number;
   priority?: boolean;
 }) {
-  const size = DEFAULT_SIZE[variant];
+  const aspect = ASPECT[variant];
+  const h = height ?? (width ? Math.round(width / aspect) : DEFAULT_HEIGHT[variant]);
+  const w = width ?? Math.round(h * aspect);
+
   return (
     <Image
       src={SRC[variant]}
-      alt="CardioConsult"
-      width={width ?? size.width}
-      height={height ?? size.height}
-      className={cn("h-auto w-auto", className)}
+      alt={APP_NAME}
+      width={w}
+      height={h}
       priority={priority}
+      className={cn("block max-w-full object-contain object-left", className)}
+      style={{ width: w, height: h }}
     />
   );
 }

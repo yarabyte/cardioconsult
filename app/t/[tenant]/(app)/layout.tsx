@@ -1,53 +1,83 @@
 import { headers } from "next/headers";
+import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
-import { getDemoUser } from "@/lib/demo-user";
-import { MockPatientRepository, MockTenantRepository } from "@/lib/data/repositories";
-import { isRoleAllowedOnPath, primaryActionForRole } from "@/lib/route-access";
+import {
+  homeForRole,
+  isRoleAllowedOnPath,
+  normalizeTenantPath,
+  primaryActionForRole,
+} from "@/lib/route-access";
 import { can } from "@/lib/rbac";
-import { TENANT_MARTIN_ID } from "@/lib/mock/patients";
+import { getConsoleOrigin } from "@/lib/console-url";
+import { requireContext } from "@/server/auth/require-context";
+import { getControlDb } from "@/server/db/control-db";
+import { tenants } from "@/db/control/schema";
+import { listSidebarOpenDossiers } from "@/server/services/patients/open-dossiers";
+import { findTenantBySlug } from "@/server/tenants/by-slug";
 
 type Props = LayoutProps<"/t/[tenant]">;
 
-/** Tenant shell reads cookies/headers/params — allow blocking render (Cache Components). */
-export const instant = false;
-
 export default async function TenantAppLayout({ children, params }: Props) {
   const { tenant: slug } = await params;
-  const user = await getDemoUser();
-  const tenant = await MockTenantRepository.getBySlug(slug);
 
-  if (!tenant) notFound();
+  // Avant auth : un sous-domaine inconnu ne doit jamais entrer dans le shell cabinet.
+  if (!(await findTenantBySlug(slug))) notFound();
+
+  const ctx = await requireContext({ permission: "patient.read" });
+
+  if (ctx.role === "SUPERADMIN") {
+    redirect(getConsoleOrigin());
+  }
+
+  if (!ctx.tenant || ctx.tenant.slug !== slug) notFound();
 
   const h = await headers();
-  const pathname = h.get("x-pathname") ?? `/t/${slug}/tableau-de-bord`;
+  const rawPath = h.get("x-pathname") ?? `/t/${slug}/tableau-de-bord`;
+  const path = normalizeTenantPath(rawPath);
 
-  if (user.role === "SUPERADMIN") {
-    redirect("/console");
+  if (!isRoleAllowedOnPath(ctx.role, path)) {
+    redirect(homeForRole(ctx.role));
   }
 
-  if (user.tenantId && user.tenantId !== tenant.id) notFound();
-
-  if (!isRoleAllowedOnPath(user.role, pathname)) notFound();
-
-  if (pathname.includes("/parametres/equipe") && !can(user, "team.manage")) {
-    notFound();
+  const subject = { role: ctx.role, isTenantAdmin: ctx.user.isTenantAdmin };
+  if (path.startsWith("/parametres/equipe") && !can(subject, "team.manage")) {
+    redirect(homeForRole(ctx.role));
+  }
+  if (path.startsWith("/parametres/securite") && !can(subject, "audit.read")) {
+    redirect(homeForRole(ctx.role));
+  }
+  if (path.startsWith("/parametres/donnees-rgpd") && !can(subject, "settings.manage")) {
+    redirect(homeForRole(ctx.role));
+  }
+  if (path.startsWith("/parametres/abonnement") && !can(subject, "billing.manage")) {
+    redirect(homeForRole(ctx.role));
   }
 
-  const patients =
-    tenant.id === TENANT_MARTIN_ID ? await MockPatientRepository.list(tenant.id) : [];
-  const patientOptions = patients.map((p) => ({
-    id: p.id,
-    label: `${p.firstName.charAt(0)}. ${p.lastName}`,
-  }));
+  const control = getControlDb();
+  const [tenantRow] = await control
+    .select({ name: tenants.name })
+    .from(tenants)
+    .where(eq(tenants.id, ctx.tenant.id))
+    .limit(1);
+  const tenantName = tenantRow?.name ?? slug;
+
+  let openDossiers: Awaited<ReturnType<typeof listSidebarOpenDossiers>> = [];
+  try {
+    openDossiers = await listSidebarOpenDossiers(ctx.tenant.id, ctx.user.id);
+  } catch {
+    openDossiers = [];
+  }
 
   return (
     <AppShell
-      role={user.role}
-      userName={user.name}
-      tenantName={tenant.name}
-      primaryAction={primaryActionForRole(user.role)}
-      patients={patientOptions}
+      role={ctx.role}
+      isTenantAdmin={ctx.user.isTenantAdmin}
+      userName={ctx.user.name}
+      tenantName={tenantName}
+      tenantId={ctx.tenant.id}
+      primaryAction={primaryActionForRole(ctx.role)}
+      openDossiers={openDossiers}
     >
       {children}
     </AppShell>

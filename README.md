@@ -1,73 +1,84 @@
-# CardioConsult
+# Cardio Soin
 
-Front-end Next.js (App Router) du SaaS de consultation en cardiologie — converti depuis les maquettes HTML de `templates-html/`. Données 100 % fictives ; prêt à brancher un backend via les interfaces `*Repository`.
+SaaS multi-tenant de consultation en cardiologie (France). Données **100 % synthétiques** en local / CI. Sécurité et traçabilité avant la vitesse de livraison.
 
 ## Stack
 
-- Next.js 16 · TypeScript strict · Tailwind CSS v4 · shadcn/ui · lucide-react
-- Formulaires : react-hook-form + zod · Dates : date-fns (`fr`, Europe/Paris)
-- Graphiques : Recharts (composants `components/charts`)
-- Qualité : ESLint, Prettier (+ plugin Tailwind), Vitest
+- Next.js 16 (App Router, `proxy.ts`) · TypeScript strict (`noUncheckedIndexedAccess`) · Tailwind CSS v4 · shadcn/ui
+- Validation : zod (`env.ts`) · Logs : pino (redact PII) · Qualité : ESLint security, Prettier, Vitest, Playwright
+- Cible données : PostgreSQL 16 + Drizzle (P02), MinIO, Gotenberg, ClamAV, Mailpit
 
-## Démarrage local
+## Prérequis
+
+- Node 22+, pnpm 9
+- Postgres 16+ (Docker via `pnpm compose:up`, **ou** instance Homebrew locale)
 
 ```bash
 pnpm install
+pnpm telemetry:disable   # aucune télémétrie tierce Next.js
+cp .env.example .env.local
+pnpm compose:up          # Postgres, MinIO, Gotenberg, ClamAV, Mailpit (si Docker dispo)
+pnpm db:migrate:control  # schéma control-plane
+pnpm db:seed             # provisionne dr-martin + patients synthétiques + compte auth
 pnpm dev
+# optionnel : worker jobs
+pnpm jobs:work
 ```
 
-Ouvrir :
+Sans Docker, sur Postgres Homebrew déjà lancé sur `:5432` :
 
-| URL | Espace |
-|---|---|
-| http://localhost:3000 | Site public |
-| http://dr-martin.localhost:3000 | Cabinet (tenant) |
-| http://console.localhost:3000 | Console super admin |
-| http://localhost:3000/design | Identité visuelle |
-| http://localhost:3000/inscription | Création de tenant |
+```bash
+psql -d postgres -c "CREATE ROLE cardioconsult LOGIN PASSWORD 'cardioconsult' SUPERUSER;"
+psql -d postgres -c "CREATE DATABASE cc_control OWNER cardioconsult;"
+psql -d postgres -c "CREATE DATABASE cc_control_test OWNER cardioconsult;"
+```
 
-Les navigateurs modernes résolvent `*.localhost` vers `127.0.0.1`.
+Compte seed (synthétique) : `c.martin@cabinet-martin.fr` / `motdepasse-demo-12` — MFA TOTP à enrôler à la première connexion.
 
-### Variables d’environnement
+## Hôtes locaux
 
-Copier `.env.example` → `.env.local` :
+Les navigateurs résolvent `*.localhost` vers `127.0.0.1`.
 
-| Variable | Rôle |
-|---|---|
-| `NEXT_PUBLIC_DEMO=true` | Affiche le sélecteur de rôle de démonstration |
-| `NEXT_PUBLIC_ROOT_DOMAIN` | Domaine racine (défaut `cardioconsult.fr`) |
-| `MOCK_DELAY=0` | Désactive la latence simulée des mocks |
+| URL                             | Espace              |
+| ------------------------------- | ------------------- |
+| http://localhost:3000           | Site public         |
+| http://dr-martin.localhost:3000 | Cabinet (tenant)    |
+| http://console.localhost:3000   | Console super admin |
+| http://localhost:8025           | Mailpit (UI)        |
+| http://localhost:9001           | MinIO console       |
 
 ## Scripts
 
 ```bash
 pnpm dev
-pnpm build
+pnpm build          # inclut pnpm audit --audit-level=high
 pnpm lint
 pnpm typecheck
 pnpm test
+pnpm test:e2e       # Playwright (en-têtes sécurité en production)
+pnpm format:check
 ```
 
-## Structure
+## Structure (règle 01)
 
 ```text
-app/(marketing)/     Site public, inscription, /design
-app/(console)/       Console plateforme
-app/t/[tenant]/     Auth + application cabinet
-components/          UI, layout, clinical, charts, documents, admin
-lib/clinical/        Règles pures testées (CHA₂DS₂-VA, HAS-BLED, RCRI, aorte, BSA)
-lib/data/            Interfaces Repository + Mock*
-lib/mock/            Jeux de données repris des maquettes
-proxy.ts             Réécriture multi-tenant (hôte → routes)
+app/                 routes App Router
+components/          UI métier + shadcn
+server/              actions / services / repositories (à venir P02+)
+db/control|tenant    schémas Drizzle (P02)
+lib/                 clinical, security, logging, rbac, tenant
+env.ts               validation zod au démarrage (instrumentation)
+proxy.ts             hôte → rewrite + CSP / strip x-cc-tenant
+docker-compose.yml   dépendances locales
 ```
 
-## Brancher un vrai backend
+## Sécurité (rappel P01)
 
-1. Implémenter les interfaces de `lib/data/repositories.ts` (API / ORM).
-2. Remplacer les exports `Mock*` par les adaptateurs réels (injection ou module swap).
-3. Passer `MOCK_ACTIVE` à `false` dans `lib/data/delay.ts` pour retirer le bandeau.
-4. Brancher l’auth réelle (session) à la place du cookie `demo-role`.
+- En-têtes : CSP (nonce), HSTS (prod), `nosniff`, `Referrer-Policy`, etc.
+- Les en-têtes internes (`x-cc-tenant`, …) fournis par le client sont **supprimés** puis recalculés depuis l’hôte.
+- Pas de dépendance de télémétrie tierce. Secrets uniquement via `.env*` (non versionné, sauf `.env.example`).
+- Pré-commit : lint-staged + gitleaks (si binaire disponible).
 
 ## Conformité
 
-Les alertes et scores sont des aides à la décision — jamais une décision médicale. Mentions HDS telles que dans les maquettes (« hébergeur certifié HDS à contractualiser »).
+Les scores et alertes sont des aides à la documentation, pas des décisions médicales. Voir `docs/` et `DECISIONS.md`. Ne pas affirmer une conformité RGPD/HDS/DM sans preuves.

@@ -1,4 +1,4 @@
-# CardioConsult — templates HTML (v1, 23/11/2026)
+# Cardio Soin — templates HTML (v1, 23/11/2026)
 
 - Ouvrir `index.html` dans Chrome, Edge, Firefox ou Safari : aucun serveur nécessaire. La police se charge depuis Google Fonts si une connexion est disponible.
 - 19 écrans autonomes. La navigation latérale relie les écrans entre eux et le bouton « Tous les écrans » ramène à l'index.

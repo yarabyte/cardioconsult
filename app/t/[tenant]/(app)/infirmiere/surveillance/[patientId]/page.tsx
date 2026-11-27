@@ -1,25 +1,31 @@
 import { notFound } from "next/navigation";
-import { MockVitalsRepository } from "@/lib/data/repositories";
+import { requireTenantPage } from "@/server/auth/require-tenant-page";
+import { loadSurveillanceOnDb } from "@/server/hospitalisation/service";
 
 type Props = PageProps<"/t/[tenant]/infirmiere/surveillance/[patientId]">;
 
 export const metadata = { title: "Surveillance" };
 
-const LABELS: Record<string, string> = {
-  "hosp-arnaud": "M. Arnaud · décompensation IC",
-  "CC-000184": "J. Dupont · suivi",
-  "CC-000231": "R. Lefèvre · ETT",
-  "CC-000412": "M. Benali · préop",
-  "CC-000097": "A. Girard · FA",
-};
-
 export default async function SurveillancePage({ params }: Props) {
-  const { patientId } = await params;
-  const vitals = await MockVitalsRepository.listByPatient(patientId);
-  const label = LABELS[patientId];
-  if (!label) notFound();
+  const { tenant: slug, patientId } = await params;
+  const ctx = await requireTenantPage({ permission: "vitals.write" });
+  if (ctx.tenant.slug !== slug) notFound();
 
-  const { VitalsSurveillanceClient } = await import("@/components/infirmiere/VitalsSurveillanceClient");
+  const payload = await loadSurveillanceOnDb(ctx.db, patientId);
+  if (!payload.patientId || !payload.label) notFound();
 
-  return <VitalsSurveillanceClient patientLabel={label} initial={vitals} />;
+  const { VitalsSurveillanceClient } =
+    await import("@/components/infirmiere/VitalsSurveillanceClient");
+
+  return (
+    <VitalsSurveillanceClient
+      patientId={payload.patientId}
+      patientLabel={payload.label}
+      stayId={payload.stayId}
+      initialActive={payload.active}
+      initialAll={payload.all}
+      initialFluids={payload.fluids}
+      initialTransmissions={payload.transmissions}
+    />
+  );
 }

@@ -4,7 +4,7 @@ import { StatusBadge } from "@/components/clinical/StatusBadge";
 import { TrendChart } from "@/components/charts/TrendChart";
 import { Button } from "@/components/ui/button";
 import { toSingleSeries } from "@/lib/chart-data";
-import { jeanneFevgSeries } from "@/lib/mock/series";
+import { jeanneFevgSeries } from "@/lib/marketing/chart-fixtures";
 
 export const metadata: Metadata = {
   title: "Identité visuelle",
@@ -35,22 +35,22 @@ const fevgDemo = toSingleSeries(jeanneFevgSeries.slice(-5));
 
 export default function DesignReferencePage() {
   return (
-    <div className="min-h-screen bg-background px-6 py-12 text-foreground md:px-14 md:py-14">
+    <div className="bg-background text-foreground min-h-screen px-6 py-12 md:px-14 md:py-14">
       <div className="mx-auto grid max-w-7xl grid-cols-12 gap-6">
         <header className="col-span-12 flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="text-brand-red mb-1.5 text-[13px] font-extrabold tracking-widest uppercase">
               Identité visuelle · proposition v1
             </p>
-            <h1 className="text-4xl font-extrabold tracking-tight">CardioConsult</h1>
+            <h1 className="text-4xl font-extrabold tracking-tight">Cardio Soin</h1>
           </div>
-          <p className="max-w-md text-right text-sm text-muted-foreground">
+          <p className="text-muted-foreground max-w-md text-right text-sm">
             Cœur bicolore (bleu médical / rouge cardio) traversé d&apos;un complexe QRS. Lisible de
             24 à 512 px.
           </p>
         </header>
 
-        <div className="col-span-12 flex flex-col justify-center gap-7 rounded-[20px] border border-border bg-card p-8 lg:col-span-7 lg:p-10">
+        <div className="border-border bg-card col-span-12 flex flex-col justify-center gap-7 rounded-[20px] border p-8 lg:col-span-7 lg:p-10">
           <Logo variant="clair" width={520} className="max-w-full" />
           <div className="flex flex-wrap items-end gap-7">
             <Logo variant="icone" width={96} height={96} />
@@ -61,15 +61,15 @@ export default function DesignReferencePage() {
         </div>
 
         <aside className="col-span-12 flex flex-col gap-6 lg:col-span-5">
-          <div className="flex flex-1 items-center justify-center rounded-[20px] bg-foreground p-8">
+          <div className="bg-foreground flex flex-1 items-center justify-center rounded-[20px] p-8">
             <Logo variant="sombre" width={400} className="max-w-full" />
           </div>
-          <div className="flex flex-1 items-center justify-center rounded-[20px] border border-border bg-card p-7">
+          <div className="border-border bg-card flex flex-1 items-center justify-center rounded-[20px] border p-7">
             <Logo variant="mono" width={340} className="max-w-full" />
           </div>
         </aside>
 
-        <div className="col-span-12 flex flex-col gap-4 rounded-[20px] border border-border bg-card p-7 lg:col-span-7">
+        <div className="border-border bg-card col-span-12 flex flex-col gap-4 rounded-[20px] border p-7 lg:col-span-7">
           <h2 className="text-lg font-extrabold">Couleurs</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {COLORS.map((c) => (
@@ -83,13 +83,13 @@ export default function DesignReferencePage() {
                   }}
                 />
                 <div className="mt-2 text-sm font-bold">{c.name}</div>
-                <div className="text-xs text-muted-foreground">{c.note}</div>
+                <div className="text-muted-foreground text-xs">{c.note}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="col-span-12 flex flex-col gap-3.5 rounded-[20px] border border-border bg-card p-7 lg:col-span-5">
+        <div className="border-border bg-card col-span-12 flex flex-col gap-3.5 rounded-[20px] border p-7 lg:col-span-5">
           <h2 className="text-lg font-extrabold">Typographie — Plus Jakarta Sans</h2>
           <div className="text-[34px] font-extrabold tracking-tight">Titre 34 / ExtraBold</div>
           <div className="text-xl font-bold">Sous-titre 20 / Bold</div>
@@ -97,12 +97,12 @@ export default function DesignReferencePage() {
             Texte courant 15 / Regular — FEVG 47 %, TAS 128 mmHg, QTc 443 ms : chiffres tabulaires
             pour les valeurs cliniques.
           </p>
-          <div className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+          <div className="text-muted-foreground text-xs font-bold tracking-widest uppercase">
             Libellé 12 / Bold capitales
           </div>
         </div>
 
-        <div className="col-span-12 rounded-[20px] border border-border bg-card p-6 lg:p-7">
+        <div className="border-border bg-card col-span-12 rounded-[20px] border p-6 lg:p-7">
           <h2 className="mb-3 text-base font-extrabold">Graphique de démonstration</h2>
           <TrendChart
             data={fevgDemo}
@@ -119,7 +119,7 @@ export default function DesignReferencePage() {
           />
         </div>
 
-        <div className="col-span-12 flex flex-wrap items-center gap-3.5 rounded-[20px] border border-border bg-card px-6 py-6 lg:px-7">
+        <div className="border-border bg-card col-span-12 flex flex-wrap items-center gap-3.5 rounded-[20px] border px-6 py-6 lg:px-7">
           <h2 className="mr-3 text-base font-extrabold">Statuts cliniques</h2>
           {BADGE_VARIANTS.map((variant) => (
             <StatusBadge key={variant} variant={variant} />

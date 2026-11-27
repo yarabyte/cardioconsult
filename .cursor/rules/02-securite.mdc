@@ -1,0 +1,52 @@
+---
+description: Règles de sécurité applicative (OWASP ASVS niveau 2 visé) — toujours appliqué
+globs:
+alwaysApply: true
+---
+
+# Sécurité — règles bloquantes
+
+Une revue de code doit refuser tout changement qui viole une de ces règles.
+
+## Authentification et session
+- Comptes nominatifs uniquement, jamais de compte partagé. **MFA (TOTP) obligatoire** pour tous les rôles avant tout accès aux données ; passkeys en option.
+- Mots de passe : 12 caractères minimum, vérification contre une liste de mots de passe compromis, hachage argon2id (paramètres de Better Auth ou plus forts).
+- Anti-force brute : limitation de débit par IP **et** par compte, verrouillage progressif, messages d'erreur identiques (« identifiants invalides »).
+- Cookies de session **host-only** par sous-domaine (préfixe `__Host-`), `Secure`, `HttpOnly`, `SameSite=Lax`. **Jamais** de cookie partagé sur `.cardiosoins.com`.
+- Expiration après **15 min d'inactivité** (configurable par tenant, 30 min maximum) et durée absolue de 12 h. Ré-authentification pour les actions sensibles : signature, export, changement de rôle, désactivation de la MFA.
+- Rotation de l'identifiant de session à la connexion et à l'élévation de privilège. Déconnexion = invalidation côté serveur.
+
+## Autorisation et isolation des tenants
+- Le tenant est déduit **uniquement de l'hôte** (middleware), puis l'appartenance de l'utilisateur à ce tenant est vérifiée en base à chaque requête.
+- Vérification de permission côté serveur dans **chaque** action et chaque chargement de page. Le masquage dans l'UI n'est jamais une protection.
+- Les identifiants sont des UUID v7. Ne jamais faire confiance à un ID envoyé par le client sans vérifier qu'il appartient au tenant courant.
+- Les permissions verrouillées (`document.sign`, `prescription.validate`) sont **codées en dur** pour `MEDECIN` et ne sont pas attribuables.
+- Le super admin n'a **aucun** chemin d'accès aux bases tenant. L'accès support se fait par une session déléguée, temporaire, consentie par l'administrateur du cabinet, tracée des deux côtés.
+
+## Entrées, sorties, injection
+- Validation zod de toutes les entrées (taille max, formats, enums). Requêtes SQL via Drizzle uniquement. `sql.raw` est interdit, et toute exception doit être documentée et revue.
+- Aucun `dangerouslySetInnerHTML`. Le texte riche (comptes rendus) est stocké en format structuré (JSON ProseMirror/Tiptap) et rendu sans HTML brut. Si du HTML est indispensable, le passer par DOMPurify côté serveur.
+- Téléversements : liste blanche MIME **et** vérification des magic bytes, 20 Mo maximum, antivirus (ClamAV) avant mise à disposition, nom de fichier régénéré, stockage hors webroot, URL présignées de 5 min maximum.
+- Protection CSRF : Server Actions (contrôle d'origine natif) et en-tête `Origin` vérifié sur les route handlers mutables.
+- Pas de redirection ouverte : `redirectTo` limité à des chemins relatifs en liste blanche.
+
+## En-têtes et transport
+- HTTPS partout, HSTS (`max-age=63072000; includeSubDomains; preload`).
+- CSP stricte avec nonce : `default-src 'self'`, sans `unsafe-inline` pour les scripts, `frame-ancestors 'none'`, `object-src 'none'`, `base-uri 'self'`.
+- `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` minimale, `Cross-Origin-Opener-Policy: same-origin`.
+- Aucun script tiers (analytics, chat, polices distantes) dans l'application tenant. Polices auto-hébergées via `next/font`.
+
+## Secrets et configuration
+- Secrets uniquement dans les variables d'environnement, validées par zod au démarrage (`env.ts`), jamais dans le dépôt. `.env*` est dans `.gitignore`, et seul `.env.example` est versionné.
+- Clés de chiffrement gérées par un KMS ou Vault. Jamais en dur, jamais dans les logs.
+- Pré-commit et CI : gitleaks ; analyse de dépendances avec `pnpm audit` et Dependabot/Renovate ; SAST avec Semgrep (règles OWASP et Next.js).
+
+## Journalisation et erreurs
+- Logger structuré (pino) avec liste d'exclusion : nom, prénom, date de naissance, INS, e-mail patient, contenu clinique, jetons, mots de passe. Ne journaliser que des identifiants techniques.
+- Erreurs renvoyées au client : message générique et `requestId`. Les stack traces ne restent que côté serveur.
+- Pas d'envoi de traces vers un SaaS hors périmètre HDS. Sentry, s'il est utilisé, est auto-hébergé et la capture de PII désactivée.
+
+## Interdits absolus
+- Données patients dans `localStorage`, `sessionStorage`, IndexedDB, URL, cookies, ou `console.log`.
+- Données patients réelles dans les fixtures, les seeds, les tickets, les prompts IA ou les captures d'écran.
+- Désactiver la MFA, la CSP ou un contrôle d'accès « temporairement ».

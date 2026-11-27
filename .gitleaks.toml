@@ -1,0 +1,13 @@
+title = "Cardio Soin"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Fichiers et motifs autorisés"
+paths = [
+  '''^\.env\.example$''',
+  '''^docs/''',
+  '''^templates-html/''',
+  '''^prompts/''',
+]

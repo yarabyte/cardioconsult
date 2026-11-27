@@ -1,0 +1,45 @@
+---
+description: Données de santé, RGPD, hébergement HDS, conservation, dispositif médical — toujours appliqué
+globs:
+alwaysApply: true
+---
+
+# Données de santé — cadre France
+
+> Ces règles traduisent en exigences de développement le cahier des charges (§B, §E, §F). Elles ne valent pas avis juridique : toute question réglementaire ouverte va dans `docs/conformite/questions-ouvertes.md`.
+
+## Rôles RGPD
+- Le **cabinet ou l'établissement** est responsable du traitement des données de ses patients. **L'éditeur de Cardio Soin est sous-traitant** (art. 28). L'acceptation du contrat de sous-traitance est horodatée et versionnée à l'inscription.
+- L'éditeur est responsable du traitement pour ses propres données : comptes, facturation, support.
+- Le registre des traitements et les mentions d'information sont maintenus dans `docs/conformite/`.
+
+## Hébergement
+- Les données de santé hébergées pour le compte des cabinets doivent l'être chez un **hébergeur certifié HDS**, sur le périmètre de certification adapté (hébergement d'infrastructure ou infogérance), en vérifiant les exigences de localisation du référentiel HDS en vigueur.
+- Cela vaut pour tous les environnements qui contiennent des données réelles : production, sauvegardes, journaux applicatifs contenant des identifiants patients, stockage de fichiers, service PDF, file de jobs.
+- Aucun service tiers (e-mail, monitoring, IA, analytics) ne reçoit de donnée de santé. Les e-mails transactionnels ne contiennent jamais d'information clinique ni de nom de patient.
+
+## Minimisation et chiffrement
+- Ne collecter que les champs nécessaires à la finalité de soin.
+- Chiffrement au repos : volumes et base chiffrés par l'hébergeur, **plus** un chiffrement applicatif par enveloppe (DEK par tenant, enveloppée par une KEK du KMS) pour l'identité patient (nom, prénom, date de naissance, INS, coordonnées) et les textes libres cliniques.
+- Recherche sur les champs chiffrés via un index aveugle (HMAC-SHA256 normalisé, clé dédiée par tenant).
+- Chiffrement en transit TLS 1.2+, y compris entre l'application et PostgreSQL ou S3.
+
+## Cycle de vie
+- **Pas de suppression physique** d'un dossier utilisé en soins depuis l'interface. Prévoir un archivage logique et une politique de conservation **paramétrable par tenant**. Aucune purge automatique sans décision explicite du responsable de traitement.
+- Rectification par addendum versionné. Une note ou un document signé n'est jamais modifié silencieusement.
+- Export complet des données d'un tenant (portabilité, réversibilité), en format ouvert et documenté, chiffré et protégé par ré-authentification.
+- Procédure de violation de données documentée : détection, registre, qualification, notification CNIL sous 72 h si nécessaire. Les journaux doivent permettre de déterminer qui a accédé à quoi.
+
+## Identité patient
+- L'INS ne peut être marquée « qualifiée » qu'après interrogation du téléservice INSi via une intégration homologuée. En attendant, afficher « INS non qualifiée » et ne jamais simuler la qualification.
+- Détection de doublons à la création (nom, prénom, date de naissance, sexe normalisés).
+
+## Dispositif médical
+- Les scores interprétés, alertes et suggestions peuvent qualifier le logiciel en dispositif médical (règlement (UE) 2017/745, règle 11).
+- Chaque module à finalité médicale est derrière un **feature flag par tenant**, désactivé par défaut en production tant que la qualification et la validation clinique ne sont pas documentées.
+- Libellés prudents : « alerte de mesure », « discussion spécialisée suggérée ». Jamais « indication chirurgicale », « diagnostic » ou « traitement recommandé ».
+
+## Développement, IA et support
+- Données **synthétiques** uniquement en local, en CI, en préproduction et en démo. Générateur de seeds dans `db/seed/` (faker `fr`).
+- Aucune donnée réelle ne doit être collée dans Cursor, un ticket, un chat ou un outil IA. Aucun appel à un LLM externe avec des données patients.
+- Aucune copie de la base de production chez un développeur. Le support se fait par session déléguée tracée (voir la règle sécurité).

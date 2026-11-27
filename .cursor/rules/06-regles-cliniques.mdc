@@ -1,0 +1,40 @@
+---
+description: Moteur de règles cliniques (scores, alertes, aorte, calculs) — fonctions pures, versionnées, testées
+globs: lib/clinical/**,server/services/clinical/**,components/clinical/**
+alwaysApply: false
+---
+
+# Règles cliniques
+
+## Contrat unique
+```ts
+type RuleResult<T> = {
+  ruleId: string            // ex. 'SCORE.CHA2DS2VA'
+  ruleVersion: string       // ex. '2024.1'
+  source: string            // référence bibliographique ou « référentiel du cabinet — à valider »
+  status: 'non_applicable' | 'incomplet' | 'calcule' | 'saisi_externe' | 'incoherent'
+  value: T | null
+  range?: { min: T; max: T } // si incomplet
+  rationale: string[]        // « pourquoi ce résultat ? »
+  missingInputs: string[]    // libellés lisibles
+  warnings: string[]
+}
+```
+- `lib/clinical/*` : **aucun I/O**, aucune date système implicite (la date de l'acte est passée en paramètre), aucune dépendance à React.
+- Les critères sont à trois états (`yes | no | unknown`). Une donnée inconnue ne vaut **jamais** « non » : `status: 'incomplet'` avec un `range`.
+- Les entrées incompatibles (deux classes d'âge, FA et rythme sinusal non expliqués) donnent `status: 'incoherent'`, sans valeur.
+- Une seule source de vérité : l'âge est calculé à la date de l'acte depuis la date de naissance, le sexe vient de l'identité. Jamais de case dupliquée.
+- Les scores officiels non implémentés (EuroSCORE II, STS, GRACE officiel, HCM Risk-SCD) sont saisis avec `status: 'saisi_externe'` et un lien vers le calculateur. Jamais recalculés.
+- Aorte : règles **par segment**, avec éligibilité. Croissance calculée seulement depuis une mesure antérieure datée. Surface/hauteur : segment explicite et taille requise. Niveaux : `alerte_mesure`, `discussion_specialisee`, `potentiellement_urgent`. Jamais de décision opératoire.
+- QTc : méthode explicite (Fridericia/Bazett), stockée avec la valeur. BSA : Mosteller, refus des valeurs impossibles.
+
+## Gouvernance
+- Chaque règle a une fiche `docs/regles/<ruleId>.md` : objectif, population, entrées et unités, formule, seuils, source, version, limites, auteur de la validation clinique (à remplir par un cardiologue).
+- Les résultats persistés stockent `ruleId`, `ruleVersion`, les entrées et la date. Les comptes rendus signés affichent la version.
+- Module derrière un feature flag (voir la règle données de santé). Les seuils configurables par tenant sont versionnés et audités.
+- Une alerte se reconnaît (`alert.acknowledge`) avec l'auteur et l'horodatage. Elle ne disparaît jamais sans action.
+
+## Tests (bloquants)
+- Pour chaque règle : cas nominaux issus de jeux de référence documentés, bornes, données manquantes, incohérences, changement puis retrait d'un critère (pas d'état « collant »).
+- Couverture de `lib/clinical` ≥ 95 % (lignes et branches).
+- Scénarios du cahier des charges T-06 à T-15 reproduits à l'identique.

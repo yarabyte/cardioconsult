@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  image:
+    name: Build · SBOM · Trivy · cosign
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: cardioconsult:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: CycloneDX SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: cardioconsult:ci
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.cdx.json
+
+      - name: Trivy image (HIGH/CRITICAL)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: cardioconsult:ci
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign image (keyless — à activer sur registry)
+        if: ${{ false }}
+        run: |
+          # Activer après push registry HDS : cosign sign --yes "$IMAGE@${DIGEST}"
+          echo "Signature cosign documentée — activer hors CI locale"
+
+  migrate-doc:
+    name: Rappeler l'ordre des migrations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ordre control → tenants
+        run: |
+          echo "1. pnpm db:migrate:control"
+          echo "2. pnpm db:migrate:tenants (par lots, canary)"
+          echo "3. Vérifier healthcheck / rollback documenté dans docs/exploitation/deploiement.md"
+          test -f docs/exploitation/deploiement.md

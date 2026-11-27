@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { ErrorPage } from "@/components/errors/ErrorPage";
 
 export default function TenantAppError({
   error,
@@ -16,14 +16,28 @@ export default function TenantAppError({
   }, [error]);
 
   return (
-    <div className="bg-card border-border mx-auto max-w-lg rounded-2xl border p-6 text-center">
-      <h2 className="text-lg font-extrabold">Une erreur est survenue</h2>
-      <p className="text-muted-foreground mt-2 text-sm">
-        L&apos;écran n&apos;a pas pu être affiché. Réessayez ou revenez au tableau de bord.
-      </p>
-      <Button type="button" className="mt-4" onClick={reset}>
-        Réessayer
-      </Button>
-    </div>
+    <ErrorPage
+      code="Erreur"
+      title="Une erreur est survenue"
+      description="L’écran n’a pas pu être affiché. Réessayez ou revenez au tableau de bord."
+      requestId={error.digest}
+      actions={[
+        {
+          type: "button",
+          label: "Réessayer",
+          onClick: () => {
+            // Rechargement complet : évite les Server Actions obsolètes après HMR.
+            reset();
+            window.location.reload();
+          },
+        },
+        {
+          type: "link",
+          href: "/tableau-de-bord",
+          label: "Tableau de bord",
+          variant: "outline",
+        },
+      ]}
+    />
   );
 }

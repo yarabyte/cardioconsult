@@ -17,13 +17,17 @@ export type Cha2ds2vaInput = {
   criteria: Cha2ds2vaCriteria;
 };
 
-const LABELS: Record<keyof Cha2ds2vaCriteria, { label: string; points: number }> = {
-  insuffisanceCardiaque: { label: "Insuffisance cardiaque", points: 1 },
-  hta: { label: "Hypertension artérielle", points: 1 },
-  diabete: { label: "Diabète", points: 1 },
-  avc: { label: "AVC / AIT / embolie systémique", points: 2 },
-  vasculaire: { label: "Maladie vasculaire", points: 1 },
-};
+export const CHA2DS2VA_LABELS: Record<keyof Cha2ds2vaCriteria, { label: string; points: number }> =
+  {
+    insuffisanceCardiaque: { label: "Insuffisance cardiaque", points: 1 },
+    hta: { label: "Hypertension artérielle", points: 1 },
+    diabete: { label: "Diabète", points: 1 },
+    avc: { label: "AVC / AIT / embolie systémique", points: 2 },
+    vasculaire: { label: "Maladie vasculaire", points: 1 },
+  };
+
+/** @deprecated alias — préférer CHA2DS2VA_LABELS */
+const LABELS = CHA2DS2VA_LABELS;
 
 /**
  * CHA₂DS₂-VA without sex criterion.

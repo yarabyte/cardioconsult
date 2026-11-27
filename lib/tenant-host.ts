@@ -1,4 +1,6 @@
-export const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "cardioconsult.fr";
+import { DEFAULT_ROOT_DOMAIN } from "@/lib/brand";
+
+export const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? DEFAULT_ROOT_DOMAIN;
 
 export const RESERVED_SUBDOMAINS = [
   "www",
@@ -9,6 +11,9 @@ export const RESERVED_SUBDOMAINS = [
   "support",
   "demo",
   "cardio",
+  "status",
+  "docs",
+  "mail",
 ] as const;
 
 export const TENANT_SLUG_REGEX = /^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$/;

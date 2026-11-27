@@ -1,0 +1,159 @@
+# Stack démo / préprod — destinée à Coolify (proxy TLS Coolify, pas de Caddy local).
+# Données synthétiques uniquement. Voir docs/exploitation/mise-en-ligne-demo-lightsail.md
+#
+# Dans Coolify : ressource « Docker Compose », domaines sur le service `app` (port 3000).
+
+name: cardiosoins-demo
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cardioconsult}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD requis}
+      POSTGRES_DB: ${POSTGRES_DB:-cc_control}
+    volumes:
+      - demo_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cardioconsult} -d ${POSTGRES_DB:-cc_control}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 384m
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD requis}
+    volumes:
+      - demo_minio_data:/data
+    mem_limit: 192m
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 3;
+      mc alias set local http://minio:9000 $${MINIO_ROOT_USER:-minio} $${MINIO_ROOT_PASSWORD};
+      mc mb -p local/$${S3_BUCKET:-cardiosoins-demo} || true;
+      exit 0;
+      "
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD requis}
+      S3_BUCKET: ${S3_BUCKET:-cardiosoins-demo}
+
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    restart: unless-stopped
+    mem_limit: 512m
+
+  clamav:
+    image: clamav/clamav:1.4
+    restart: unless-stopped
+    volumes:
+      - demo_clamav_data:/var/lib/clamav
+    mem_limit: 768m
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+      args:
+        NEXT_PUBLIC_APP_ENV: production
+        NEXT_PUBLIC_ROOT_DOMAIN: cardiosoins.com
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_ADMIN_URL: ${DATABASE_ADMIN_URL}
+      S3_ENDPOINT: http://minio:9000
+      S3_REGION: ${S3_REGION:-eu-north-1}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minio}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET: ${S3_BUCKET:-cardiosoins-demo}
+      S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
+      GOTENBERG_URL: http://gotenberg:3000
+      CLAMAV_HOST: clamav
+      CLAMAV_PORT: "3310"
+      APP_SECRET: ${APP_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-https://cardiosoins.com}
+      NEXT_PUBLIC_ROOT_DOMAIN: cardiosoins.com
+      NEXT_PUBLIC_APP_ENV: production
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_FROM: ${SMTP_FROM:-noreply@cardiosoins.com}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_SECURE: ${SMTP_SECURE:-true}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      CONSOLE_REQUIRE_PASSKEY: ${CONSOLE_REQUIRE_PASSKEY:-true}
+      CONSOLE_IP_ALLOWLIST: ${CONSOLE_IP_ALLOWLIST:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+      gotenberg:
+        condition: service_started
+    # Port interne uniquement — exposition HTTPS via le proxy Coolify
+    expose:
+      - "3000"
+    mem_limit: 512m
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: tools
+    restart: unless-stopped
+    command: ["pnpm", "jobs:work"]
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_ADMIN_URL: ${DATABASE_ADMIN_URL}
+      S3_ENDPOINT: http://minio:9000
+      S3_REGION: ${S3_REGION:-eu-north-1}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minio}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET: ${S3_BUCKET:-cardiosoins-demo}
+      S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
+      GOTENBERG_URL: http://gotenberg:3000
+      CLAMAV_HOST: clamav
+      CLAMAV_PORT: "3310"
+      APP_SECRET: ${APP_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      app:
+        condition: service_started
+    mem_limit: 384m
+
+  tools:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: tools
+    profiles: ["tools"]
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_ADMIN_URL: ${DATABASE_ADMIN_URL}
+      S3_ENDPOINT: http://minio:9000
+      APP_SECRET: ${APP_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  demo_pg_data:
+  demo_minio_data:
+  demo_clamav_data:

@@ -1,0 +1,37 @@
+---
+description: Authentification Better Auth, MFA, rôles et matrice de permissions
+globs: server/auth/**,app/**/connexion/**,app/**/parametres/**,lib/rbac.ts
+alwaysApply: false
+---
+
+# Authentification et RBAC
+
+## Better Auth
+- Adaptateur Drizzle sur le **control-plane**. Plugins : `twoFactor` (TOTP + codes de secours), `passkey` (option), `organization` (si adapté au modèle `member`), limitation de débit.
+- Parcours : e-mail et mot de passe → MFA obligatoire (enrôlement forcé à la première connexion) → session.
+- Préparer un fournisseur OIDC générique « Pro Santé Connect » derrière un flag (`PSC_ENABLED=false`) : aucune simulation de connexion e-CPS.
+- La vérification du RPPS à l'inscription passe par une interface `RppsVerifier`. Implémentation `ManualReview` en attendant une intégration à l'annuaire santé.
+
+## Permissions (source unique : `lib/rbac.ts`)
+```ts
+export const PERMISSIONS = [
+  'patient.read', 'patient.write', 'patient.archive',
+  'appointment.read', 'appointment.write',
+  'vitals.write', 'ecg.write', 'nursing.note.write',
+  'encounter.write', 'exam.write', 'score.write', 'alert.acknowledge',
+  'document.write', 'document.validate', 'document.sign',
+  'prescription.write', 'prescription.validate',
+  'stats.read', 'export.data',
+  'team.manage', 'settings.manage', 'billing.manage', 'audit.read',
+] as const
+```
+- Matrice par défaut : `MEDECIN` = tout. `INFIRMIERE` = `patient.read`, `appointment.*`, `vitals.write`, `ecg.write`, `nursing.note.write`. L'administrateur du cabinet peut ajouter `exam.write` et `stats.read` à l'infirmière.
+- `team.manage`, `settings.manage`, `billing.manage`, `audit.read` et `export.data` exigent `isTenantAdmin`.
+- **Verrouillés** pour `MEDECIN` uniquement : `document.sign`, `prescription.validate`, `document.validate`.
+- Surcharges stockées par tenant dans `role_permission_override`. `can()` combine défaut, surcharges et verrous, et c'est la **seule** fonction autorisée à décider.
+- Tests unitaires exhaustifs de la matrice (table de vérité) + E2E : une infirmière qui appelle directement l'action de signature reçoit un refus et un audit `access_denied` est créé.
+
+## Équipe
+- Invitation par e-mail : jeton aléatoire de 32 octets, haché en base, usage unique, valable 72 h, lié à l'e-mail et au tenant.
+- Changement de rôle, désactivation, réinitialisation de la MFA : ré-authentification de l'administrateur + audit. Impossible de retirer le dernier administrateur.
+- Désactiver un membre révoque immédiatement toutes ses sessions.

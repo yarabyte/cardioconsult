@@ -1,0 +1,38 @@
+---
+description: Contexte Cardio Soin, stack et principes non négociables — toujours appliqué
+globs:
+alwaysApply: true
+---
+
+# Cardio Soin — contexte permanent
+
+## Produit
+SaaS multi-tenant de **consultation en cardiologie**, vendu aux cardiologues libéraux, aux cabinets de groupe et aux services hospitaliers **en France**. Interface **uniquement en français**. Chaque cabinet a son espace `<tenant>.cardiosoins.com`. La console plateforme est sur `console.cardiosoins.com` et le site public sur `cardiosoins.com`.
+
+Rôles : `SUPERADMIN` (plateforme, **jamais d'accès aux dossiers patients**), `MEDECIN` (avec drapeau `isTenantAdmin`), `INFIRMIERE`.
+
+La référence visuelle et fonctionnelle est le dossier `templates-html/` (19 écrans). Les règles métier détaillées sont dans `docs/cahier-des-charges.md`.
+
+## Stack (ne pas en dévier sans entrée dans `DECISIONS.md`)
+- Next.js (App Router, dernière version stable), React Server Components par défaut, Server Actions pour les mutations.
+- TypeScript `strict`, `noUncheckedIndexedAccess`.
+- Tailwind CSS v4, shadcn/ui, lucide-react, Recharts (via le composant `chart` de shadcn).
+- PostgreSQL 16+ et **Drizzle ORM** (node-postgres). Une base *control-plane* et **une base dédiée par tenant**.
+- Better Auth (sessions stockées en base, 2FA TOTP, OIDC générique pour Pro Santé Connect plus tard).
+- Validation avec zod partout (entrées, variables d'environnement, sorties d'API publiques).
+- Jobs : pg-boss (file d'attente sur PostgreSQL). Stockage de fichiers : S3-compatible chez l'hébergeur HDS. PDF : service Gotenberg isolé.
+- Tests : Vitest (unitaires), Playwright (E2E). Gestionnaire de paquets : pnpm.
+
+## Principes non négociables
+1. **Données de santé** : aucune donnée réelle hors de la production autorisée. En développement, en CI et dans les démos, uniquement des données synthétiques.
+2. **Refus par défaut** : chaque lecture et chaque écriture vérifie, côté serveur, le tenant **et** la permission.
+3. **Rien de « normal » par défaut** : un champ vide reste `null` / « non renseigné ». Aucune valeur clinique préremplie.
+4. **Pas de décision médicale automatique** : scores et alertes sont des aides à la documentation, sourcées, versionnées et revues par le médecin.
+5. **Traçabilité** : toute action sur un dossier patient produit un événement d'audit.
+6. **Pas de dette silencieuse** : si une exigence ne peut pas être tenue, l'écrire dans `DECISIONS.md` et dans le rapport de fin de tâche. Ne jamais la contourner discrètement.
+
+## Façon de travailler
+- Lire les règles `.cursor/rules/*`, le prompt de la tâche et les fichiers concernés **avant** de coder.
+- Petits incréments, un commit par sous-tâche. Messages de commit conventionnels, en français.
+- En fin de tâche, rendre un rapport : fichiers modifiés, migrations, tests ajoutés, points ouverts, risques résiduels.
+- Ne jamais affirmer qu'une fonctionnalité est conforme (RGPD, HDS, dispositif médical) : écrire « prévu pour » et lister les preuves manquantes.

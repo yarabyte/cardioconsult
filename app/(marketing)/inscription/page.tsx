@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from "@/components/brand/Logo";
 import { Badge } from "@/components/ui/badge";
@@ -13,18 +14,18 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  ROOT_DOMAIN,
-  checkSubdomainAvailability,
-  type SubdomainAvailability,
-} from "@/lib/tenant-host";
+import { ROOT_DOMAIN, type SubdomainAvailability } from "@/lib/tenant-host";
+import { CGU_VERSION, DPA_VERSION } from "@/lib/validation/inscription";
 import { cn } from "@/lib/utils";
+import { getSignupCaptcha } from "@/server/actions/captcha";
+import { submitInscription } from "@/server/actions/inscription";
+import { checkSubdomainServer } from "@/server/actions/subdomain";
 
 const WIZARD_STEPS = [
   { id: 0, title: "Votre compte", subtitle: "Identité et e-mail professionnel" },
   { id: 1, title: "Cabinet & RPPS", subtitle: "Établissement et vérif. annuaire santé" },
   { id: 2, title: "Votre espace", subtitle: "Sous-domaine et équipe" },
-  { id: 3, title: "Offre & essai", subtitle: "Aucun paiement aujourd'hui" },
+  { id: 3, title: "Essai 30 jours", subtitle: "Solo inclus · sans carte bancaire" },
 ] as const;
 
 function normalizeSlug(raw: string): string {
@@ -37,69 +38,78 @@ function normalizeSlug(raw: string): string {
     .replace(/^-|-$/g, "");
 }
 
-const inscriptionSchema = z
-  .object({
-    prenom: z.string().min(1, "Le prénom est requis."),
-    nom: z.string().min(1, "Le nom est requis."),
-    email: z.string().email("Adresse e-mail invalide."),
-    password: z.string().min(8, "Au moins 8 caractères."),
-    cabinetName: z.string().min(2, "Nom du cabinet requis."),
-    rpps: z
-      .string()
-      .regex(/^\d{11}$/, "Le numéro RPPS comporte 11 chiffres."),
-    adresse: z.string().min(5, "Adresse du cabinet requise."),
-    subdomain: z.string().min(1, "Choisissez un sous-domaine."),
-    displayName: z.string().min(2, "Nom affiché requis."),
-    cgu: z.boolean(),
-    plan: z.enum(["solo", "cabinet", "clinique"]),
-  });
+const inscriptionSchema = z.object({
+  prenom: z.string().min(1, "Le prénom est requis."),
+  nom: z.string().min(1, "Le nom est requis."),
+  email: z.string().email("Adresse e-mail invalide."),
+  password: z.string().min(12, "Au moins 12 caractères."),
+  cabinetName: z.string().min(2, "Nom du cabinet requis."),
+  rpps: z.string().regex(/^\d{11}$/, "Le numéro RPPS comporte 11 chiffres."),
+  adresse: z.string().min(5, "Adresse du cabinet requise."),
+  subdomain: z.string().min(1, "Choisissez un sous-domaine."),
+  displayName: z.string().min(2, "Nom affiché requis."),
+  cgu: z.boolean(),
+  dpa: z.boolean(),
+  demoData: z.boolean(),
+  captchaAnswer: z.string().min(1, "Répondez à la question anti-abus."),
+});
 
 type InscriptionForm = z.infer<typeof inscriptionSchema>;
 
 const stepFields: (keyof InscriptionForm)[][] = [
   ["prenom", "nom", "email", "password"],
   ["cabinetName", "rpps", "adresse"],
-  ["subdomain", "displayName", "cgu"],
-  ["plan"],
+  ["subdomain", "displayName", "cgu", "dpa"],
+  ["demoData", "captchaAnswer"],
 ];
 
 const defaultValues: InscriptionForm = {
-  prenom: "Claire",
-  nom: "Martin",
-  email: "c.martin@cabinet-martin.fr",
+  prenom: "",
+  nom: "",
+  email: "",
   password: "",
-  cabinetName: "Cabinet de cardiologie Martin",
-  rpps: "10001234567",
-  adresse: "12 rue des Lilas, 69003 Lyon",
-  subdomain: "cabinet-martin",
-  displayName: "Cabinet de cardiologie Martin",
-  cgu: true,
-  plan: "cabinet",
+  cabinetName: "",
+  rpps: "",
+  adresse: "",
+  subdomain: "",
+  displayName: "",
+  cgu: false,
+  dpa: false,
+  demoData: true,
+  captchaAnswer: "",
 };
 
 function SubdomainFeedback({
   availability,
   slug,
 }: {
-  availability: SubdomainAvailability;
+  availability: SubdomainAvailability | null;
   slug: string;
 }) {
+  if (!availability) {
+    return <p className="text-muted-foreground text-sm">Vérification…</p>;
+  }
   if (availability.status === "available") {
     return (
-      <p className="flex items-center gap-2 text-sm font-bold text-success">
+      <p className="text-success flex items-center gap-2 text-sm font-bold">
         <Check className="size-4" aria-hidden />
         {slug}.{ROOT_DOMAIN} est disponible
       </p>
     );
   }
   if ("message" in availability) {
-    return <p className="text-sm font-bold text-destructive">{availability.message}</p>;
+    return <p className="text-destructive text-sm font-bold">{availability.message}</p>;
   }
   return null;
 }
 
 export default function InscriptionPage() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [availability, setAvailability] = useState<SubdomainAvailability | null>(null);
+  const [captcha, setCaptcha] = useState<{ question: string; token: string } | null>(null);
   const form = useForm<InscriptionForm>({
     resolver: zodResolver(inscriptionSchema),
     defaultValues,
@@ -108,13 +118,33 @@ export default function InscriptionPage() {
 
   const subdomainRaw = form.watch("subdomain");
   const slug = useMemo(() => normalizeSlug(subdomainRaw) || "votre-cabinet", [subdomainRaw]);
-  const availability = useMemo(
-    () => checkSubdomainAvailability(slug),
-    [slug],
-  );
-  const subOk = availability.status === "available";
-
+  const subOk = availability?.status === "available";
   const errors = form.formState.errors;
+
+  const refreshCaptcha = useCallback(async () => {
+    const c = await getSignupCaptcha();
+    setCaptcha(c);
+    form.setValue("captchaAnswer", "");
+  }, [form]);
+
+  useEffect(() => {
+    void refreshCaptcha();
+  }, [refreshCaptcha]);
+
+  useEffect(() => {
+    if (step !== 2) return;
+    let cancelled = false;
+    const t = setTimeout(() => {
+      void (async () => {
+        const result = await checkSubdomainServer(slug);
+        if (!cancelled) setAvailability(result);
+      })();
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [slug, step]);
 
   async function goNext() {
     const fields = stepFields[step];
@@ -122,32 +152,67 @@ export default function InscriptionPage() {
     if (!valid) return;
 
     if (step === 2) {
-      if (!form.getValues("cgu")) {
-        form.setError("cgu", { message: "Vous devez accepter les CGU." });
+      if (!form.getValues("cgu") || !form.getValues("dpa")) {
+        form.setError("cgu", { message: "Acceptez les CGU et le contrat de sous-traitance." });
         return;
       }
-      if (availability.status !== "available") {
+      const check = await checkSubdomainServer(slug);
+      setAvailability(check);
+      if (check.status !== "available") {
         form.setError("subdomain", {
-          message:
-            "message" in availability ? availability.message : "Sous-domaine indisponible.",
+          message: "message" in check ? check.message : "Sous-domaine indisponible.",
         });
         return;
+      }
+      if (!form.getValues("displayName")) {
+        form.setValue("displayName", form.getValues("cabinetName"));
       }
     }
 
     if (step < WIZARD_STEPS.length - 1) {
       setStep((s) => s + 1);
-    } else {
-      const finalSlug = normalizeSlug(form.getValues("subdomain"));
-      const finalCheck = checkSubdomainAvailability(finalSlug);
-      if (finalCheck.status !== "available") {
-        form.setError("subdomain", {
-          message: "message" in finalCheck ? finalCheck.message : "Sous-domaine indisponible.",
-        });
-        setStep(2);
+      return;
+    }
+
+    if (!captcha) {
+      toast.error("Captcha indisponible. Actualisez la page.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const values = form.getValues();
+      const result = await submitInscription({
+        prenom: values.prenom,
+        nom: values.nom,
+        email: values.email,
+        password: values.password,
+        cabinetName: values.cabinetName,
+        rpps: values.rpps,
+        adresse: values.adresse,
+        subdomain: normalizeSlug(values.subdomain),
+        displayName: values.displayName || values.cabinetName,
+        cgu: true as const,
+        dpa: true as const,
+        demoData: values.demoData,
+        captchaToken: captcha.token,
+        captchaAnswer: values.captchaAnswer,
+      });
+      if (!result.ok) {
+        toast.error(result.error.message);
+        if (result.error.code === "captcha") await refreshCaptcha();
+        if (result.error.code === "slug" || result.error.code === "slug_taken") setStep(2);
+        if (result.error.code === "rpps") setStep(1);
         return;
       }
-      toast.success(`Espace ${finalSlug}.${ROOT_DOMAIN} créé (démo).`);
+      router.push(
+        `/inscription/attente/${result.tenantId}?slug=${encodeURIComponent(result.slug)}&email=${encodeURIComponent(values.email)}`,
+      );
+    } catch {
+      toast.error("Une erreur est survenue. Réessayez.");
+      await refreshCaptcha();
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -156,15 +221,15 @@ export default function InscriptionPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-wrap bg-background text-foreground">
-      <aside className="flex min-h-screen min-w-0 flex-1 basis-[340px] max-w-[460px] flex-col gap-9 bg-foreground px-8 py-10 text-primary-foreground">
+    <div className="bg-background text-foreground flex min-h-screen flex-col lg:flex-row">
+      <aside className="bg-foreground text-primary-foreground flex w-full shrink-0 flex-col gap-8 px-8 py-10 lg:sticky lg:top-0 lg:h-screen lg:w-1/2 lg:max-w-none lg:overflow-y-auto lg:px-12 lg:py-12">
         <Logo variant="sombre" width={240} className="-ml-2" />
         <div>
           <h1 className="text-[28px] leading-tight font-extrabold">
             Créez l&apos;espace de votre cabinet
           </h1>
           <p className="mt-2 leading-relaxed text-[#c3d1ea]">
-            30 jours d&apos;essai, données fictives de démonstration incluses.
+            30 jours d&apos;essai. Aucune donnée de santé n&apos;est collectée à l&apos;inscription.
           </p>
         </div>
         <ol className="flex list-none flex-col gap-1.5 p-0">
@@ -197,9 +262,9 @@ export default function InscriptionPage() {
                   <br />
                   <span className="text-[13px] text-[#9fb3d9]">
                     {done && index === 0
-                      ? `Dr ${form.watch("prenom")} ${form.watch("nom")} · e-mail vérifié`
+                      ? `${form.watch("prenom")} ${form.watch("nom")}`
                       : done && index === 1
-                        ? "RPPS vérifié via l'annuaire santé"
+                        ? "RPPS soumis — revue manuelle"
                         : s.subtitle}
                   </span>
                 </span>
@@ -213,12 +278,9 @@ export default function InscriptionPage() {
         </p>
       </aside>
 
-      <main className="min-w-0 flex-[999] basis-[560px] px-6 py-12 sm:px-12">
-        <form
-          className="mx-auto flex max-w-3xl flex-col gap-7"
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <p className="text-[13px] font-bold text-muted-foreground">
+      <main className="flex min-h-0 min-w-0 flex-1 items-start justify-center px-6 py-12 sm:px-12 lg:overflow-y-auto lg:py-16">
+        <form className="flex w-full max-w-xl flex-col gap-7" onSubmit={(e) => e.preventDefault()}>
+          <p className="text-muted-foreground text-[13px] font-bold">
             Étape {step + 1} sur {WIZARD_STEPS.length}
           </p>
           <h2 className="text-3xl font-extrabold tracking-tight">{WIZARD_STEPS[step]?.title}</h2>
@@ -228,37 +290,73 @@ export default function InscriptionPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="prenom">Prénom</Label>
-                  <Input id="prenom" className="h-11" {...form.register("prenom")} />
+                  <Input
+                    id="prenom"
+                    className="h-11"
+                    autoComplete="given-name"
+                    {...form.register("prenom")}
+                  />
                   {errors.prenom ? (
-                    <p className="text-sm text-destructive">{errors.prenom.message}</p>
+                    <p className="text-destructive text-sm">{errors.prenom.message}</p>
                   ) : null}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="nom">Nom</Label>
-                  <Input id="nom" className="h-11" {...form.register("nom")} />
+                  <Input
+                    id="nom"
+                    className="h-11"
+                    autoComplete="family-name"
+                    {...form.register("nom")}
+                  />
                   {errors.nom ? (
-                    <p className="text-sm text-destructive">{errors.nom.message}</p>
+                    <p className="text-destructive text-sm">{errors.nom.message}</p>
                   ) : null}
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Adresse e-mail professionnelle</Label>
-                <Input id="email" type="email" className="h-11" {...form.register("email")} />
+                <Input
+                  id="email"
+                  type="email"
+                  className="h-11"
+                  autoComplete="email"
+                  {...form.register("email")}
+                />
                 {errors.email ? (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
+                  <p className="text-destructive text-sm">{errors.email.message}</p>
                 ) : null}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Mot de passe</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  className="h-11"
-                  autoComplete="new-password"
-                  {...form.register("password")}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    className="h-11 pr-11"
+                    autoComplete="new-password"
+                    {...form.register("password")}
+                  />
+                  <button
+                    type="button"
+                    className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2.5 -translate-y-1/2 rounded-md p-1.5"
+                    aria-label={
+                      showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"
+                    }
+                    aria-pressed={showPassword}
+                    onClick={() => setShowPassword((v) => !v)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-4" aria-hidden />
+                    ) : (
+                      <Eye className="size-4" aria-hidden />
+                    )}
+                  </button>
+                </div>
+                <p className="text-muted-foreground text-xs">
+                  12 caractères minimum. MFA à activer à la première connexion.
+                </p>
                 {errors.password ? (
-                  <p className="text-sm text-destructive">{errors.password.message}</p>
+                  <p className="text-destructive text-sm">{errors.password.message}</p>
                 ) : null}
               </div>
             </fieldset>
@@ -270,21 +368,25 @@ export default function InscriptionPage() {
                 <Label htmlFor="cabinetName">Nom du cabinet</Label>
                 <Input id="cabinetName" className="h-11" {...form.register("cabinetName")} />
                 {errors.cabinetName ? (
-                  <p className="text-sm text-destructive">{errors.cabinetName.message}</p>
+                  <p className="text-destructive text-sm">{errors.cabinetName.message}</p>
                 ) : null}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="rpps">Numéro RPPS</Label>
                 <Input id="rpps" inputMode="numeric" className="h-11" {...form.register("rpps")} />
+                <p className="text-muted-foreground text-xs">
+                  Vérification provisoire : revue manuelle par le support. L&apos;essai reste
+                  possible.
+                </p>
                 {errors.rpps ? (
-                  <p className="text-sm text-destructive">{errors.rpps.message}</p>
+                  <p className="text-destructive text-sm">{errors.rpps.message}</p>
                 ) : null}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="adresse">Adresse du cabinet</Label>
                 <Input id="adresse" className="h-11" {...form.register("adresse")} />
                 {errors.adresse ? (
-                  <p className="text-sm text-destructive">{errors.adresse.message}</p>
+                  <p className="text-destructive text-sm">{errors.adresse.message}</p>
                 ) : null}
               </div>
             </fieldset>
@@ -292,17 +394,21 @@ export default function InscriptionPage() {
 
           {step === 2 && (
             <fieldset className="flex flex-col gap-5 border-0 p-0">
-              <div className="rounded-2xl border border-border bg-card p-7">
+              <div className="border-border bg-card rounded-2xl border p-7">
                 <Label htmlFor="subdomain" className="text-[15px] font-bold">
                   Sous-domaine
                 </Label>
                 <div
                   className={cn(
                     "mt-2 flex overflow-hidden rounded-xl border-[1.5px]",
-                    subOk ? "border-success" : "border-destructive",
+                    subOk
+                      ? "border-success"
+                      : availability
+                        ? "border-destructive"
+                        : "border-border",
                   )}
                 >
-                  <span className="shrink-0 self-center pl-4 text-[17px] text-muted-foreground">
+                  <span className="text-muted-foreground shrink-0 self-center pl-4 text-[17px]">
                     https://
                   </span>
                   <Input
@@ -312,16 +418,15 @@ export default function InscriptionPage() {
                     autoComplete="off"
                     {...form.register("subdomain")}
                   />
-                  <span className="border-l border-border bg-background px-4 py-3.5 text-[17px] text-muted-foreground">
+                  <span className="border-border bg-background text-muted-foreground border-l px-4 py-3.5 text-[17px]">
                     .{ROOT_DOMAIN}
                   </span>
                 </div>
                 <div className="mt-3">
                   <SubdomainFeedback availability={availability} slug={slug} />
                 </div>
-                <p className="mt-2 text-[13px] text-muted-foreground">
-                  3 à 30 caractères : lettres minuscules, chiffres et tirets. Modifiable plus tard par
-                  le support.
+                <p className="text-muted-foreground mt-2 text-[13px]">
+                  3 à 30 caractères : lettres minuscules, chiffres et tirets.
                 </p>
               </div>
 
@@ -336,25 +441,27 @@ export default function InscriptionPage() {
                     id="hds"
                     readOnly
                     value="France — hébergeur HDS"
-                    className="h-11 bg-background text-muted-foreground"
+                    className="bg-background text-muted-foreground h-11"
                   />
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-border bg-card px-7 py-6">
+              <div className="border-border bg-card rounded-2xl border px-7 py-6">
                 <h3 className="text-[17px] font-extrabold">Rôles créés par défaut</h3>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-separator p-4">
+                  <div className="border-separator rounded-xl border p-4">
                     <div className="flex justify-between gap-2">
                       <strong>Médecin</strong>
-                      <Badge className="bg-primary-soft text-primary">Vous · admin du cabinet</Badge>
+                      <Badge className="bg-primary-soft text-primary">
+                        Vous · admin du cabinet
+                      </Badge>
                     </div>
                     <p className="mt-2 text-sm leading-relaxed text-[#3e4d6a]">
                       Dossiers, consultations, validation et signature des comptes rendus et
                       ordonnances.
                     </p>
                   </div>
-                  <div className="rounded-xl border border-separator p-4">
+                  <div className="border-separator rounded-xl border p-4">
                     <strong>Infirmière</strong>
                     <p className="mt-2 text-sm leading-relaxed text-[#3e4d6a]">
                       Accueil, constantes, ECG, surveillance et transmissions. Pas de signature ni
@@ -362,70 +469,122 @@ export default function InscriptionPage() {
                     </p>
                   </div>
                 </div>
-                <p className="mt-3 text-sm text-muted-foreground">
-                  Vous inviterez votre équipe depuis Paramètres → Équipe & rôles.
-                </p>
               </div>
 
-              <div className="flex items-start gap-3">
-                <Checkbox
-                  id="cgu"
-                  checked={form.watch("cgu")}
-                  onCheckedChange={(v) => form.setValue("cgu", v === true, { shouldValidate: true })}
-                />
-                <Label htmlFor="cgu" className="text-sm leading-relaxed font-normal text-[#3e4d6a]">
-                  J&apos;accepte les <Link href="/">CGU</Link> et le{" "}
-                  <Link href="/">contrat de sous-traitance (art. 28 RGPD)</Link>. Je reste
-                  responsable du traitement des données de mes patients.
-                </Label>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="cgu"
+                    className="mt-0.5"
+                    checked={form.watch("cgu")}
+                    onCheckedChange={(v) =>
+                      form.setValue("cgu", v === true, { shouldValidate: true })
+                    }
+                  />
+                  <Label
+                    htmlFor="cgu"
+                    className="block min-w-0 flex-1 text-sm leading-relaxed font-normal text-[#3e4d6a]"
+                  >
+                    J&apos;accepte les{" "}
+                    <Link
+                      href="/cgu"
+                      className="text-primary font-semibold underline-offset-2 hover:underline"
+                    >
+                      CGU
+                    </Link>{" "}
+                    (version {CGU_VERSION}).
+                  </Label>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="dpa"
+                    className="mt-0.5"
+                    checked={form.watch("dpa")}
+                    onCheckedChange={(v) =>
+                      form.setValue("dpa", v === true, { shouldValidate: true })
+                    }
+                  />
+                  <Label
+                    htmlFor="dpa"
+                    className="block min-w-0 flex-1 text-sm leading-relaxed font-normal text-[#3e4d6a]"
+                  >
+                    J&apos;accepte le{" "}
+                    <Link
+                      href="/sous-traitance"
+                      className="text-primary font-semibold underline-offset-2 hover:underline"
+                    >
+                      contrat de sous-traitance (art. 28 RGPD)
+                    </Link>{" "}
+                    (version {DPA_VERSION}). Je reste responsable du traitement des données de mes
+                    patients.
+                  </Label>
+                </div>
+                {errors.cgu ? (
+                  <p className="text-destructive text-sm">{errors.cgu.message}</p>
+                ) : null}
               </div>
-              {errors.cgu ? (
-                <p className="text-sm text-destructive">{errors.cgu.message}</p>
-              ) : null}
             </fieldset>
           )}
 
           {step === 3 && (
-            <fieldset className="grid gap-4 border-0 p-0 sm:grid-cols-3">
-              {(
-                [
-                  { id: "solo" as const, name: "Solo", detail: "1 cardiologue · 1 infirmière" },
-                  {
-                    id: "cabinet" as const,
-                    name: "Cabinet",
-                    detail: "Jusqu'à 5 médecins",
-                    featured: true,
-                  },
-                  {
-                    id: "clinique" as const,
-                    name: "Clinique / service",
-                    detail: "Sur devis · SSO",
-                  },
-                ] as const
-              ).map((offer) => (
-                <button
-                  key={offer.id}
-                  type="button"
-                  onClick={() => form.setValue("plan", offer.id)}
-                  className={cn(
-                    "rounded-2xl border p-5 text-left transition-colors",
-                    form.watch("plan") === offer.id
-                      ? "border-primary ring-2 ring-primary/30"
-                      : "border-border bg-card",
-                    "featured" in offer && offer.featured && "border-primary",
-                  )}
+            <fieldset className="flex flex-col gap-6 border-0 p-0">
+              <div className="rounded-2xl border border-[#0B4FB3]/25 bg-[#E8F0FB]/60 p-6">
+                <p className="text-[13px] font-extrabold tracking-[0.12em] text-[#0B4FB3] uppercase">
+                  Inclus dès aujourd&apos;hui
+                </p>
+                <h3 className="mt-2 text-xl font-extrabold text-[#0A1F44]">
+                  Essai 30 jours — offre Solo
+                </h3>
+                <ul className="mt-4 list-none space-y-2 p-0 text-[14.5px] leading-relaxed text-[#3E4D6A]">
+                  <li>Aucun paiement aujourd&apos;hui · sans carte bancaire.</li>
+                  <li>
+                    Après l&apos;essai : abonnement Solo (jusqu&apos;à 2 utilisateurs). Vous pourrez
+                    passer à Cabinet ou Clinique depuis Paramètres → Abonnement.
+                  </li>
+                  <li>
+                    Deux rappels e-mail une semaine et la veille de la fin d&apos;essai (aucune
+                    donnée clinique dans les messages).
+                  </li>
+                </ul>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  id="demoData"
+                  checked={form.watch("demoData")}
+                  onCheckedChange={(v) => form.setValue("demoData", v === true)}
+                />
+                <Label
+                  htmlFor="demoData"
+                  className="text-sm leading-relaxed font-normal text-[#3e4d6a]"
                 >
-                  <strong className="block text-lg font-bold">{offer.name}</strong>
-                  <span className="mt-2 block text-sm text-muted-foreground">{offer.detail}</span>
-                  {offer.id !== "clinique" ? (
-                    <span className="mt-3 block text-2xl font-extrabold tabular-nums">
-                      [PRIX] <span className="text-sm font-semibold text-muted-foreground">€ HT</span>
-                    </span>
-                  ) : (
-                    <span className="mt-3 block text-2xl font-extrabold">Sur devis</span>
-                  )}
+                  Inclure un jeu de <strong>données de démonstration synthétiques</strong> (patients
+                  fictifs clairement étiquetés). Désactivable.
+                </Label>
+              </div>
+
+              <div className="border-border bg-card space-y-2 rounded-2xl border p-5">
+                <Label htmlFor="captchaAnswer">
+                  {captcha?.question ?? "Chargement anti-abus…"}
+                </Label>
+                <Input
+                  id="captchaAnswer"
+                  className="h-11 max-w-[12rem]"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  {...form.register("captchaAnswer")}
+                />
+                <button
+                  type="button"
+                  className="text-primary text-xs font-bold underline"
+                  onClick={() => void refreshCaptcha()}
+                >
+                  Nouvelle question
                 </button>
-              ))}
+                {errors.captchaAnswer ? (
+                  <p className="text-destructive text-sm">{errors.captchaAnswer.message}</p>
+                ) : null}
+              </div>
             </fieldset>
           )}
 
@@ -434,24 +593,37 @@ export default function InscriptionPage() {
               <Link
                 href="/"
                 className={cn(
-                  "inline-flex h-auto items-center justify-center rounded-xl border border-[#c9d5ea] bg-card px-5 py-3.5 text-sm font-bold",
+                  "bg-card inline-flex h-auto items-center justify-center rounded-full border border-[#c9d5ea] px-5 py-3.5 text-sm font-bold",
                 )}
               >
                 Retour
               </Link>
             ) : (
-              <Button type="button" variant="outline" className="h-auto px-5 py-3.5" onClick={goBack}>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-auto rounded-full px-5 py-3.5"
+                onClick={goBack}
+                disabled={submitting}
+              >
                 <ChevronLeft className="size-4" aria-hidden />
                 Précédent
               </Button>
             )}
             <Button
               type="button"
-              className="h-auto px-6 py-3.5 text-base font-bold"
-              onClick={goNext}
+              className="h-auto rounded-full px-6 py-3.5 text-base font-bold"
+              onClick={() => void goNext()}
+              disabled={submitting}
             >
               {step === WIZARD_STEPS.length - 1 ? (
-                <>Créer {slug}.{ROOT_DOMAIN}</>
+                submitting ? (
+                  "Création…"
+                ) : (
+                  <>
+                    Créer {slug}.{ROOT_DOMAIN}
+                  </>
+                )
               ) : (
                 <>
                   Suivant

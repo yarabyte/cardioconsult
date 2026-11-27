@@ -1,0 +1,40 @@
+---
+description: Multi-tenant (base PostgreSQL dédiée par cabinet), schémas, migrations, provisioning
+globs: db/**,server/db/**,server/repositories/**,middleware.ts,proxy.ts,drizzle*.ts
+alwaysApply: false
+---
+
+# Multi-tenant et PostgreSQL
+
+## Modèle retenu
+- **Control-plane** (`cc_control`) : tenants, domaines, plans et abonnements, utilisateurs, sessions, comptes MFA, appartenances (`member`: userId, tenantId, role, isTenantAdmin, status), invitations, consentements contractuels, sessions support, audit plateforme.
+- **Une base par tenant** (`cc_t_<uuid court>`) : données cliniques et audit du tenant. Rôle PostgreSQL dédié par tenant (`cc_t_<id>_app`), sans privilège sur les autres bases. Mot de passe généré au provisioning et stocké chiffré.
+- Le routage se fait via `getTenantDb(tenantId)`, avec un cache LRU de pools (taille bornée, `idleTimeout`). Un pool n'est jamais réutilisé pour un autre tenant.
+
+## Résolution du tenant (middleware / proxy)
+- `host` → sous-domaine → lookup control-plane (cache court, 60 s) → en-tête interne `x-cc-tenant` ajouté **par le middleware uniquement**. Tout `x-cc-tenant` entrant est supprimé.
+- Sous-domaine inconnu, tenant `suspended` ou `deleted` : page neutre, sans fuite d'information sur l'existence du tenant.
+- Slug : `^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$`. Liste réservée : `www app api admin console support demo cardio status docs mail`.
+
+## Migrations
+- Drizzle Kit : deux dossiers, `db/control/migrations` et `db/tenant/migrations`. Les migrations sont **additives** (expand → migrate → contract) et compatibles avec la version N-1 de l'application.
+- Le script `pnpm db:migrate:tenants` applique les migrations tenant par lots, avec verrou consultatif (advisory lock), journal et reprise sur erreur. Aucun tenant ne démarre sur un schéma en retard.
+- Jamais de `DROP` ou de colonne renommée dans la même release que le code qui cesse de l'utiliser.
+
+## Provisioning (job pg-boss idempotent)
+1. Créer le rôle et la base, puis révoquer `PUBLIC`.
+2. Appliquer les migrations tenant.
+3. Générer la DEK du tenant, l'envelopper avec le KMS et la stocker dans le control-plane.
+4. Créer le membre administrateur (médecin).
+5. Passer le tenant en `active`.
+
+Chaque étape est rejouable. Un échec laisse le tenant en `provisioning_failed` et déclenche une alerte.
+
+## Schéma tenant : conventions
+- Clés primaires UUID v7. Colonnes `created_at`, `created_by`, `updated_at`, `updated_by` et `version` (verrou optimiste) partout. `archived_at` au lieu d'une suppression.
+- Contraintes d'intégrité en base (FK, `CHECK` sur les plages physiologiques larges, enums) en plus de zod.
+- Tables principales : `patient`, `patient_identity_enc`, `stay` (séjour), `encounter` (consultation), `vitals`, `lab_result`, `ecg_study`, `echo_study`, `aortic_measurement`, `clinical_score`, `clinical_alert`, `document`, `document_version`, `prescription`, `prescription_line`, `appointment`, `nursing_note`, `file_object`, `audit_event`, `setting`, `feature_flag`.
+- `audit_event` est **append-only** : le rôle applicatif n'a ni `UPDATE` ni `DELETE`, un trigger refuse toute modification, et une chaîne de hachage relie chaque événement au précédent.
+
+## Sauvegardes
+- Sauvegarde continue (PITR) et dumps quotidiens chiffrés par base, conservés chez l'hébergeur HDS. **Test de restauration automatisé** au moins mensuel, sur un tenant de test, avec un rapport conservé.
