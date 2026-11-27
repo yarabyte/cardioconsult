@@ -69,7 +69,6 @@
     "@tailwindcss/turbopack": "4.3.3",
     "@types/jsdom": "^30.0.0",
     "@types/node": "^20",
-    "@types/nodemailer": "^8.0.2",
     "@types/pg": "^8.23.1",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",

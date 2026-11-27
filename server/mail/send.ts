@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import nodemailer, { type Transporter } from "nodemailer";
 import { env } from "@/env";
 import { logger } from "@/lib/logging/logger";
 
@@ -10,14 +10,14 @@ export type SendMailInput = {
   replyTo?: string;
 };
 
-let transporter: nodemailer.Transporter | null = null;
+let transporter: Transporter | null = null;
 
 function isSecure(): boolean {
   if (env.SMTP_SECURE != null) return env.SMTP_SECURE;
   return env.SMTP_PORT === 465;
 }
 
-function getTransporter(): nodemailer.Transporter {
+function getTransporter(): Transporter {
   if (transporter) return transporter;
   const secure = isSecure();
   transporter = nodemailer.createTransport({
