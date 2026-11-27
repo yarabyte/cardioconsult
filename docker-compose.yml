@@ -17,8 +17,10 @@ services:
       timeout: 5s
       retries: 10
 
+  # MinIO Inc. a retiré les images publiques Docker Hub / Quay (2026-09).
+  # Fork communautaire Silo (API S3-compatible) : pgsty/silo + pgsty/mc.
   minio:
-    image: minio/minio:latest
+    image: pgsty/silo:RELEASE.2026-10-26T00-00-00Z
     container_name: cc-minio
     command: server /data --console-address ":9001"
     environment:
@@ -31,7 +33,7 @@ services:
       - cc_minio_data:/data
 
   minio-init:
-    image: minio/mc:latest
+    image: pgsty/mc:RELEASE.2026-09-16T00-00-00Z
     container_name: cc-minio-init
     depends_on:
       - minio

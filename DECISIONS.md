@@ -2,6 +2,15 @@
 
 Journal ADR court. Les décisions Phase 1–6 (socle démo) sont conservées en bas ; les ADR P00 cadrent la cible production.
 
+## ADR — Stockage objet local / démo
+
+### ADR-060 — Remplacer les images MinIO officielles par Silo (pgsty)
+
+- **Statut** : retenu
+- **Contexte** : depuis sept. 2026, `minio/minio` et `minio/mc` ne sont plus pullables anonymement (Docker Hub / Quay). `pnpm compose:up` et tout compose Coolify échouent au pull.
+- **Décision** : `pgsty/silo` (serveur S3-compatible) + `pgsty/mc` (client) dans `docker-compose.yml` et `docker-compose.demo.yml`, tags RELEASE épinglés. Variables `MINIO_*` / `S3_*` inchangées (API compatible).
+- **Hors scope** : production HDS — objet storage chez l’hébergeur certifié, pas Silo community sur Lightsail.
+
 ## ADR — Essai & facturation
 
 ### ADR-059 — Inscription = essai 30 j Solo + rappels J-7 / J-1

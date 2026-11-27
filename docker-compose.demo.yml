@@ -23,8 +23,9 @@ services:
       retries: 20
     mem_limit: 384m
 
+  # Images MinIO officielles plus pullables anonymement (2026-09) → fork Silo.
   minio:
-    image: minio/minio:latest
+    image: pgsty/silo:RELEASE.2026-10-26T00-00-00Z
     restart: unless-stopped
     command: server /data --console-address ":9001"
     environment:
@@ -35,7 +36,7 @@ services:
     mem_limit: 192m
 
   minio-init:
-    image: minio/mc:latest
+    image: pgsty/mc:RELEASE.2026-09-16T00-00-00Z
     depends_on:
       - minio
     entrypoint: >
