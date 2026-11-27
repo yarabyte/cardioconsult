@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
@@ -20,9 +21,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
-  // Le nonce CSP est posé par proxy.ts (en-tête x-nonce) ; ne pas l'exposer en attribut DOM
-  // (réutilisation possible en cas de XSS partielle).
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Rendu dynamique obligatoire : Next injecte le nonce CSP (lu depuis l’en-tête
+  // Content-Security-Policy de la requête, posé par proxy.ts) sur les scripts.
+  // Un HTML pré-rendu + nonce frais par requête bloque toute hydratation.
+  await connection();
+
   return (
     <html lang="fr" className={`${plusJakarta.variable} h-full`}>
       <body className="flex min-h-full flex-col font-sans antialiased">

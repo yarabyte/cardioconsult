@@ -7,13 +7,31 @@ import {
   stripInternalRequestHeaders,
 } from "@/lib/security/headers";
 
-function withSecurityHeaders(response: NextResponse, nonce: string): NextResponse {
-  const isProduction = process.env.NODE_ENV === "production";
-  const headers = buildSecurityHeaders({ nonce, isProduction });
-  for (const [key, value] of Object.entries(headers)) {
+function applySecurityHeaders(
+  response: NextResponse,
+  security: Record<string, string>,
+): NextResponse {
+  for (const [key, value] of Object.entries(security)) {
     response.headers.set(key, value);
   }
   return response;
+}
+
+/**
+ * Next.js lit le nonce depuis l’en-tête CSP **de la requête** pour l’injecter
+ * sur les scripts. Sans ça (et sans rendu dynamique), la CSP bloque tout le JS.
+ * @see https://nextjs.org/docs/app/guides/content-security-policy
+ */
+function prepareRequestSecurity(requestHeaders: Headers): {
+  nonce: string;
+  security: Record<string, string>;
+} {
+  const isProduction = process.env.NODE_ENV === "production";
+  const nonce = createRequestNonce();
+  const security = buildSecurityHeaders({ nonce, isProduction });
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("Content-Security-Policy", security["Content-Security-Policy"]!);
+  return { nonce, security };
 }
 
 export function proxy(request: NextRequest) {
@@ -26,14 +44,13 @@ export function proxy(request: NextRequest) {
   stripInternalRequestHeaders(requestHeaders);
 
   if (pathname.startsWith("/_next") || pathname.startsWith("/brand") || pathname.includes(".")) {
+    const { security } = prepareRequestSecurity(requestHeaders);
     const passthrough = NextResponse.next({ request: { headers: requestHeaders } });
-    const nonce = createRequestNonce();
-    return withSecurityHeaders(passthrough, nonce);
+    return applySecurityHeaders(passthrough, security);
   }
 
-  const nonce = createRequestNonce();
+  const { security } = prepareRequestSecurity(requestHeaders);
   const requestId = createRequestId();
-  requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("x-request-id", requestId);
   requestHeaders.set("x-host-kind", resolved.kind);
   if (resolved.tenantSlug) {
@@ -46,7 +63,7 @@ export function proxy(request: NextRequest) {
   if (pathname.startsWith("/api")) {
     requestHeaders.set("x-pathname", pathname);
     const response = NextResponse.next({ request: { headers: requestHeaders } });
-    return withSecurityHeaders(response, nonce);
+    return applySecurityHeaders(response, security);
   }
 
   const url = request.nextUrl.clone();
@@ -56,11 +73,11 @@ export function proxy(request: NextRequest) {
       url.pathname = pathname === "/" ? "/console" : `/console${pathname}`;
       requestHeaders.set("x-pathname", url.pathname);
       const response = NextResponse.rewrite(url, { request: { headers: requestHeaders } });
-      return withSecurityHeaders(response, nonce);
+      return applySecurityHeaders(response, security);
     }
     requestHeaders.set("x-pathname", pathname);
     const response = NextResponse.next({ request: { headers: requestHeaders } });
-    return withSecurityHeaders(response, nonce);
+    return applySecurityHeaders(response, security);
   }
 
   if (resolved.kind === "tenant" && resolved.tenantSlug) {
@@ -69,21 +86,21 @@ export function proxy(request: NextRequest) {
       url.pathname = `${prefix}${pathname === "/" ? "/tableau-de-bord" : pathname}`;
       requestHeaders.set("x-pathname", url.pathname);
       const response = NextResponse.rewrite(url, { request: { headers: requestHeaders } });
-      return withSecurityHeaders(response, nonce);
+      return applySecurityHeaders(response, security);
     }
     requestHeaders.set("x-pathname", pathname);
     const response = NextResponse.next({ request: { headers: requestHeaders } });
-    return withSecurityHeaders(response, nonce);
+    return applySecurityHeaders(response, security);
   }
 
   if (resolved.kind === "reserved") {
     const response = new NextResponse("Sous-domaine réservé", { status: 404 });
-    return withSecurityHeaders(response, nonce);
+    return applySecurityHeaders(response, security);
   }
 
   requestHeaders.set("x-pathname", pathname);
   const response = NextResponse.next({ request: { headers: requestHeaders } });
-  return withSecurityHeaders(response, nonce);
+  return applySecurityHeaders(response, security);
 }
 
 export const config = {
