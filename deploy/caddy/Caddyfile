@@ -1,28 +1,32 @@
-# Démo Lightsail — TLS HTTP-01 (cert par hôte à la demande pour les tenants).
-# DNS Contabo : A @ et * → IP Lightsail. Mail hors de ce proxy.
+# Démo Lightsail — TLS HTTP-01.
+# Apex + www + console : certificats gérés au démarrage.
+# Autres sous-domaines tenant : on-demand (1ʳᵉ visite).
 
 {
 	email {$CADDY_ACME_EMAIL:noreply@cardiosoins.com}
-	# Limite les émissions (wildcard DNS A = tout sous-domaine résout).
 	on_demand_tls {
 		ask http://app:3000/api/caddy-ask
 	}
 }
 
-cardiosoins.com, www.cardiosoins.com {
+cardiosoins.com, www.cardiosoins.com, console.cardiosoins.com {
 	encode zstd gzip
 	reverse_proxy app:3000
 }
 
-console.cardiosoins.com {
-	encode zstd gzip
-	reverse_proxy app:3000
-}
-
-*.cardiosoins.com {
+# Catch-all HTTPS : uniquement les hôtes autorisés par /api/caddy-ask
+https:// {
 	tls {
 		on_demand
 	}
-	encode zstd gzip
-	reverse_proxy app:3000
+	@tenant {
+		host_regexp ^[a-z0-9-]+\.cardiosoins\.com$
+	}
+	handle @tenant {
+		encode zstd gzip
+		reverse_proxy app:3000
+	}
+	handle {
+		respond "Hôte non géré" 404
+	}
 }
