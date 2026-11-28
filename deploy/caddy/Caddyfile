@@ -1,13 +1,11 @@
-# Démo Lightsail — TLS HTTP-01 (pas de wildcard ACME : un cert par hôte à la demande).
-# DNS Contabo : A @ et * → IP Lightsail. Mail reste hors de ce proxy.
+# Démo Lightsail — TLS HTTP-01 (cert par hôte à la demande pour les tenants).
+# DNS Contabo : A @ et * → IP Lightsail. Mail hors de ce proxy.
 
 {
 	email {$CADDY_ACME_EMAIL:noreply@cardiosoins.com}
-	# Limite les émissions de certificats (wildcard DNS A = tout sous-domaine résout).
+	# Limite les émissions (wildcard DNS A = tout sous-domaine résout).
 	on_demand_tls {
 		ask http://app:3000/api/caddy-ask
-		interval 2m
-		burst 5
 	}
 }
 
