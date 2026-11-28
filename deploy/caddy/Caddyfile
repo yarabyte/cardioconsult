@@ -1,6 +1,5 @@
 # Démo Lightsail — TLS HTTP-01.
-# Apex + www + console : certificats gérés au démarrage.
-# Autres sous-domaines tenant : on-demand (1ʳᵉ visite).
+# Apex/www/console : certs au démarrage. Tenants : on-demand à la 1ʳᵉ visite.
 
 {
 	email {$CADDY_ACME_EMAIL:noreply@cardiosoins.com}
@@ -14,19 +13,10 @@ cardiosoins.com, www.cardiosoins.com, console.cardiosoins.com {
 	reverse_proxy app:3000
 }
 
-# Catch-all HTTPS : uniquement les hôtes autorisés par /api/caddy-ask
-https:// {
+*.cardiosoins.com {
 	tls {
 		on_demand
 	}
-	@tenant {
-		host_regexp ^[a-z0-9-]+\.cardiosoins\.com$
-	}
-	handle @tenant {
-		encode zstd gzip
-		reverse_proxy app:3000
-	}
-	handle {
-		respond "Hôte non géré" 404
-	}
+	encode zstd gzip
+	reverse_proxy app:3000
 }
