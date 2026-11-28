@@ -1,5 +1,6 @@
 # Démo Lightsail — TLS HTTP-01.
-# Apex/www/console : certs au démarrage. Tenants : on-demand à la 1ʳᵉ visite.
+# Pas de site `*.domaine` (sinon Caddy tente un wildcard ACME DNS-01 et bloque).
+# Tenants : on-demand via le catch-all :443 + /api/caddy-ask.
 
 {
 	email {$CADDY_ACME_EMAIL:noreply@cardiosoins.com}
@@ -13,7 +14,7 @@ cardiosoins.com, www.cardiosoins.com, console.cardiosoins.com {
 	reverse_proxy app:3000
 }
 
-*.cardiosoins.com {
+:443 {
 	tls {
 		on_demand
 	}
